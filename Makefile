@@ -2,7 +2,7 @@
 # Setup Project
 
 PROJECT_NAME ?= provider-vra
-PROJECT_REPO ?= github.com/ankasoftco/$(PROJECT_NAME)
+PROJECT_REPO ?= github.com/avarei/$(PROJECT_NAME)
 
 export TERRAFORM_VERSION ?= 1.5.5
 
@@ -59,17 +59,17 @@ UPTEST_VERSION = v0.5.0
 # ====================================================================================
 # Setup Images
 
-REGISTRY_ORGS ?= xpkg.upbound.io/upbound
+REGISTRY_ORGS ?= ghcr.io/avarei
 IMAGES = $(PROJECT_NAME)
 -include build/makelib/imagelight.mk
 
 # ====================================================================================
 # Setup XPKG
 
-XPKG_REG_ORGS ?= xpkg.upbound.io/upbound
-# NOTE(hasheddan): skip promoting on xpkg.upbound.io as channel tags are
+XPKG_REG_ORGS ?= ghcr.io/avarei
+# NOTE(hasheddan): skip promoting on ghcr.io/avarei as channel tags are
 # inferred.
-XPKG_REG_ORGS_NO_PROMOTE ?= xpkg.upbound.io/upbound
+XPKG_REG_ORGS_NO_PROMOTE ?= ghcr.io/avarei
 XPKGS = $(PROJECT_NAME)
 -include build/makelib/xpkg.mk
 
