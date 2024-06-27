@@ -20,7 +20,7 @@ ARG TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX
 
 ## End of - Provider-dependent configuration
 
-ENV PLUGIN_DIR /terraform/provider-mirror/registry.terraform.io/${TERRAFORM_PROVIDER_SOURCE}/${TERRAFORM_PROVIDER_VERSION}/${TARGETOS}_${TARGETARCH}
+ENV PLUGIN_DIR /terraform/provider-mirror/registry.opentofu.org/${TERRAFORM_PROVIDER_SOURCE}/${TERRAFORM_PROVIDER_VERSION}/${TARGETOS}_${TARGETARCH}
 ENV TF_CLI_CONFIG_FILE /terraform/.terraformrc
 ENV TF_FORK 0
 

@@ -106,7 +106,7 @@ $(TERRAFORM):
 	@mkdir -p $(TOOLS_HOST_DIR)/tmp-tofu
 	@curl -fsSL https://github.com/opentofu/opentofu/releases/download/v$(TERRAFORM_VERSION)/tofu_$(TERRAFORM_VERSION)_$(SAFEHOST_PLATFORM).zip -o $(TOOLS_HOST_DIR)/tmp-tofu/tofu.zip
 	@unzip $(TOOLS_HOST_DIR)/tmp-tofu/tofu.zip -d $(TOOLS_HOST_DIR)/tmp-tofu
-	@mv $(TOOLS_HOST_DIR)/tmp-tofu/terraform $(TERRAFORM)
+	@mv $(TOOLS_HOST_DIR)/tmp-tofu/tofu $(TERRAFORM)
 	@rm -fr $(TOOLS_HOST_DIR)/tmp-tofu
 	@$(OK) installing terraform $(HOSTOS)-$(HOSTARCH)
 
