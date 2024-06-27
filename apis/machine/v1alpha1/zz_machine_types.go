@@ -224,7 +224,7 @@ type MachineParameters struct {
 	// +kubebuilder:validation:Optional
 	Nics []NicsParameters `json:"nics,omitempty" tf:"nics,omitempty"`
 
-	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/cmd/provider/apis/project/v1alpha1.Project
+	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/apis/project/v1alpha1.Project
 	// +kubebuilder:validation:Optional
 	ProjectID *string `json:"projectId,omitempty" tf:"project_id,omitempty"`
 

@@ -75,7 +75,7 @@ type BlueprintParameters struct {
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
-	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/cmd/provider/apis/project/v1alpha1.Project
+	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/apis/project/v1alpha1.Project
 	// +kubebuilder:validation:Optional
 	ProjectID *string `json:"projectId,omitempty" tf:"project_id,omitempty"`
 

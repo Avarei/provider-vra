@@ -138,7 +138,7 @@ type BlockDeviceParameters struct {
 	Persistent *bool `json:"persistent,omitempty" tf:"persistent,omitempty"`
 
 	// The id of the project this resource belongs to.
-	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/cmd/provider/apis/project/v1alpha1.Project
+	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/apis/project/v1alpha1.Project
 	// +kubebuilder:validation:Optional
 	ProjectID *string `json:"projectId,omitempty" tf:"project_id,omitempty"`
 

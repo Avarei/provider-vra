@@ -25,12 +25,12 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	"github.com/avarei/provider-vra/cmd/provider/apis"
-	"github.com/avarei/provider-vra/cmd/provider/apis/v1alpha1"
-	"github.com/avarei/provider-vra/cmd/provider/config"
-	"github.com/avarei/provider-vra/cmd/provider/internal/clients"
-	"github.com/avarei/provider-vra/cmd/provider/internal/controller"
-	"github.com/avarei/provider-vra/cmd/provider/internal/features"
+	"github.com/avarei/provider-vra/apis"
+	"github.com/avarei/provider-vra/apis/v1alpha1"
+	"github.com/avarei/provider-vra/config"
+	"github.com/avarei/provider-vra/internal/clients"
+	"github.com/avarei/provider-vra/internal/controller"
+	"github.com/avarei/provider-vra/internal/features"
 )
 
 func main() {
