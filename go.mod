@@ -2,6 +2,8 @@ module github.com/avarei/provider-vra/cmd/provider
 
 go 1.19
 
+replace github.com/ankasoftco/provider-vra => github.com/avarei/provider-vra v0.0.2
+
 require (
 	github.com/crossplane/crossplane-runtime v0.20.0-rc.0.0.20230406155702-4e1673b7141f
 	github.com/crossplane/crossplane-tools v0.0.0-20230327091744-4236bf732aa5

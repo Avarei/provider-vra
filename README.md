@@ -8,10 +8,10 @@ vRA API.
 ## Getting Started
 
 Install the provider by using the following command after changing the image tag
-to the [latest release](https://marketplace.upbound.io/providers/ankasoftco/provider-vra):
+to the [latest release](https://marketplace.upbound.io/providers/avarei/provider-vra):
 
 ```
-up ctp provider install ankasoftco/provider-vra:v0.1.0
+up ctp provider install avarei/provider-vra:v0.1.0
 ```
 
 Alternatively, you can use declarative installation:
@@ -23,7 +23,7 @@ kind: Provider
 metadata:
   name: provider-vra
 spec:
-  package: ankasoftco/provider-vra:v0.1.0
+  package: avarei/provider-vra:v0.1.0
 EOF
 ```
 

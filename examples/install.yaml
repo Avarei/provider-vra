@@ -3,4 +3,4 @@ kind: Provider
 metadata:
   name: provider-vra
 spec:
-  package: ankasoftco/provider-vra:v0.1.0
+  package: avarei/provider-vra:v0.1.0
