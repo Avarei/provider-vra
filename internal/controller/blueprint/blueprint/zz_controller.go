@@ -18,8 +18,8 @@ import (
 	"github.com/upbound/upjet/pkg/terraform"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	v1alpha1 "github.com/ankasoftco/provider-vra/apis/blueprint/v1alpha1"
-	features "github.com/ankasoftco/provider-vra/internal/features"
+	v1alpha1 "github.com/avarei/provider-vra/cmd/provider/apis/blueprint/v1alpha1"
+	features "github.com/avarei/provider-vra/cmd/provider/internal/features"
 )
 
 // Setup adds a controller that reconciles Blueprint managed resources.

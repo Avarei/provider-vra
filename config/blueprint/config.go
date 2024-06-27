@@ -9,7 +9,7 @@ func Configure(p *config.Provider) {
 		r.ShortGroup = "blueprint"
 		r.Version = "v1alpha1"
 		r.References["project_id"] = config.Reference{
-			Type: "github.com/ankasoftco/provider-vra/apis/project/v1alpha1.Project",
+			Type: "github.com/avarei/provider-vra/cmd/provider/apis/project/v1alpha1.Project",
 		}
 	})
 

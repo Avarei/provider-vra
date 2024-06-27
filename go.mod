@@ -1,4 +1,4 @@
-module github.com/ankasoftco/provider-vra
+module github.com/avarei/provider-vra/cmd/provider
 
 go 1.19
 

@@ -8,29 +8,29 @@ import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
 
-	blockdevice "github.com/ankasoftco/provider-vra/config/block_device"
-	blueprint "github.com/ankasoftco/provider-vra/config/blueprint"
-	catalogitementitlement "github.com/ankasoftco/provider-vra/config/catalog_item"
-	catalogsource "github.com/ankasoftco/provider-vra/config/catalog_source"
-	cloudaccount "github.com/ankasoftco/provider-vra/config/cloud_account"
-	contentsource "github.com/ankasoftco/provider-vra/config/content_source"
-	deployment "github.com/ankasoftco/provider-vra/config/deployment"
-	fabric "github.com/ankasoftco/provider-vra/config/fabric"
-	flavorprofile "github.com/ankasoftco/provider-vra/config/flavor_profile"
-	imageprofile "github.com/ankasoftco/provider-vra/config/image_profile"
-	integration "github.com/ankasoftco/provider-vra/config/integration"
-	loadbalancer "github.com/ankasoftco/provider-vra/config/load_balancer"
-	machine "github.com/ankasoftco/provider-vra/config/machine"
-	network "github.com/ankasoftco/provider-vra/config/network"
-	project "github.com/ankasoftco/provider-vra/config/project"
-	storage "github.com/ankasoftco/provider-vra/config/storage"
-	zone "github.com/ankasoftco/provider-vra/config/zone"
+	blockdevice "github.com/avarei/provider-vra/cmd/provider/config/block_device"
+	blueprint "github.com/avarei/provider-vra/cmd/provider/config/blueprint"
+	catalogitementitlement "github.com/avarei/provider-vra/cmd/provider/config/catalog_item"
+	catalogsource "github.com/avarei/provider-vra/cmd/provider/config/catalog_source"
+	cloudaccount "github.com/avarei/provider-vra/cmd/provider/config/cloud_account"
+	contentsource "github.com/avarei/provider-vra/cmd/provider/config/content_source"
+	deployment "github.com/avarei/provider-vra/cmd/provider/config/deployment"
+	fabric "github.com/avarei/provider-vra/cmd/provider/config/fabric"
+	flavorprofile "github.com/avarei/provider-vra/cmd/provider/config/flavor_profile"
+	imageprofile "github.com/avarei/provider-vra/cmd/provider/config/image_profile"
+	integration "github.com/avarei/provider-vra/cmd/provider/config/integration"
+	loadbalancer "github.com/avarei/provider-vra/cmd/provider/config/load_balancer"
+	machine "github.com/avarei/provider-vra/cmd/provider/config/machine"
+	network "github.com/avarei/provider-vra/cmd/provider/config/network"
+	project "github.com/avarei/provider-vra/cmd/provider/config/project"
+	storage "github.com/avarei/provider-vra/cmd/provider/config/storage"
+	zone "github.com/avarei/provider-vra/cmd/provider/config/zone"
 	ujconfig "github.com/upbound/upjet/pkg/config"
 )
 
 const (
 	resourcePrefix = "vra"
-	modulePath     = "github.com/ankasoftco/provider-vra"
+	modulePath     = "github.com/avarei/provider-vra/cmd/provider"
 )
 
 //go:embed schema.json
