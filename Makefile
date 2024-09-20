@@ -4,11 +4,11 @@
 PROJECT_NAME ?= provider-vra
 PROJECT_REPO ?= github.com/avarei/$(PROJECT_NAME)
 
-export TERRAFORM_VERSION ?= 1.7.2
+export TERRAFORM_VERSION ?= 1.8.2
 
 export TERRAFORM_PROVIDER_SOURCE ?= vmware/vra
 export TERRAFORM_PROVIDER_REPO ?= https://github.com/vmware/terraform-provider-vra
-export TERRAFORM_PROVIDER_VERSION ?= 0.7.3
+export TERRAFORM_PROVIDER_VERSION ?= 0.9.0
 export TERRAFORM_PROVIDER_DOWNLOAD_NAME ?= terraform-provider-vra
 export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= https://releases.hashicorp.com/$(TERRAFORM_PROVIDER_DOWNLOAD_NAME)/$(TERRAFORM_PROVIDER_VERSION)
 export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-vra_v$(TERRAFORM_PROVIDER_VERSION)_x5
