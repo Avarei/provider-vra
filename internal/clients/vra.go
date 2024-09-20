@@ -28,8 +28,12 @@ const (
 )
 
 const (
-	keyURL          = "url"
-	keyRefreshToken = "refresh_token"
+	keyURL                = "url"
+	keyAccessToken        = "access_token"
+	keyRefreshToken       = "refresh_token"
+	keyInsecure           = "insecure"
+	keyReauthorizeTimeout = "reauthorize_timeout"
+	keyApiTimeout         = "api_timeout"
 )
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
@@ -73,8 +77,20 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 		if v, ok := vraCreds[keyURL]; ok {
 			ps.Configuration[keyURL] = v
 		}
+		if v, ok := vraCreds[keyAccessToken]; ok {
+			ps.Configuration[keyAccessToken] = v
+		}
 		if v, ok := vraCreds[keyRefreshToken]; ok {
 			ps.Configuration[keyRefreshToken] = v
+		}
+		if v, ok := vraCreds[keyInsecure]; ok {
+			ps.Configuration[keyInsecure] = v
+		}
+		if v, ok := vraCreds[keyReauthorizeTimeout]; ok {
+			ps.Configuration[keyReauthorizeTimeout] = v
+		}
+		if v, ok := vraCreds[keyApiTimeout]; ok {
+			ps.Configuration[keyApiTimeout] = v
 		}
 
 		// Set credentials in Terraform provider environment.
