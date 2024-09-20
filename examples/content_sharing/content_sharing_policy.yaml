@@ -1,0 +1,19 @@
+apiVersion: contentsharing.crossplane.io/v1alpha1
+kind: ContentSharingPolicy
+metadata:
+  name: test-content-sharing-policy
+spec:
+  forProvider:
+    name: 'test-content-sharing-policy'
+    description: 'My Content Sharing Policy'
+    catalogItemIds:
+      - ""
+    catalogSourceIds:
+      - ""
+    
+    projectIdRef:
+      name: 'test-project-2'
+    
+
+  providerConfigRef:
+    name: vra-test

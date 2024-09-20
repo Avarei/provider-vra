@@ -34,6 +34,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"vra_catalog_source_blueprint":   config.IdentifierFromProvider,
 	"vra_catalog_source_entitlement": config.IdentifierFromProvider,
 	"vra_catalog_item_entitlement":   config.IdentifierFromProvider,
+	"vra_content_sharing_policy":     config.IdentifierFromProvider,
 	"vra_content_source":             config.IdentifierFromProvider,
 	"vra_integration":                config.IdentifierFromProvider,
 	"vra_load_balancer":              config.IdentifierFromProvider,

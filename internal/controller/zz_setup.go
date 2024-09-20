@@ -22,6 +22,7 @@ import (
 	accountnsxt "github.com/avarei/provider-vra/internal/controller/cloudaccount/accountnsxt"
 	accountvmc "github.com/avarei/provider-vra/internal/controller/cloudaccount/accountvmc"
 	accountvsphere "github.com/avarei/provider-vra/internal/controller/cloudaccount/accountvsphere"
+	contentsharingpolicy "github.com/avarei/provider-vra/internal/controller/contentsharing/contentsharingpolicy"
 	contentsource "github.com/avarei/provider-vra/internal/controller/contentsource/contentsource"
 	deployment "github.com/avarei/provider-vra/internal/controller/deployment/deployment"
 	compute "github.com/avarei/provider-vra/internal/controller/fabric/compute"
@@ -61,6 +62,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		accountnsxt.Setup,
 		accountvmc.Setup,
 		accountvsphere.Setup,
+		contentsharingpolicy.Setup,
 		contentsource.Setup,
 		deployment.Setup,
 		compute.Setup,

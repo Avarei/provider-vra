@@ -13,6 +13,7 @@ import (
 	catalogitementitlement "github.com/avarei/provider-vra/config/catalog_item"
 	catalogsource "github.com/avarei/provider-vra/config/catalog_source"
 	cloudaccount "github.com/avarei/provider-vra/config/cloud_account"
+	contentsharing "github.com/avarei/provider-vra/config/content_sharing"
 	contentsource "github.com/avarei/provider-vra/config/content_source"
 	deployment "github.com/avarei/provider-vra/config/deployment"
 	fabric "github.com/avarei/provider-vra/config/fabric"
@@ -62,6 +63,7 @@ func GetProvider() *ujconfig.Provider {
 		catalogsource.Configure,
 		catalogitementitlement.Configure,
 		cloudaccount.Configure,
+		contentsharing.Configure,
 		contentsource.Configure,
 		integration.Configure,
 		loadbalancer.Configure,
