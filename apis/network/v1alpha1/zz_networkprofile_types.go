@@ -13,9 +13,43 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type NetworkProfileInitParameters struct {
+
+	// +mapType=granular
+	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
+
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// +listType=set
+	FabricNetworkIds []*string `json:"fabricNetworkIds,omitempty" tf:"fabric_network_ids,omitempty"`
+
+	IsolatedExternalFabricNetworkID *string `json:"isolatedExternalFabricNetworkId,omitempty" tf:"isolated_external_fabric_network_id,omitempty"`
+
+	IsolatedNetworkCidrPrefix *float64 `json:"isolatedNetworkCidrPrefix,omitempty" tf:"isolated_network_cidr_prefix,omitempty"`
+
+	IsolatedNetworkDomainCidr *string `json:"isolatedNetworkDomainCidr,omitempty" tf:"isolated_network_domain_cidr,omitempty"`
+
+	IsolatedNetworkDomainID *string `json:"isolatedNetworkDomainId,omitempty" tf:"isolated_network_domain_id,omitempty"`
+
+	IsolationType *string `json:"isolationType,omitempty" tf:"isolation_type,omitempty"`
+
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	RegionID *string `json:"regionId,omitempty" tf:"region_id,omitempty"`
+
+	// +listType=set
+	SecurityGroupIds []*string `json:"securityGroupIds,omitempty" tf:"security_group_ids,omitempty"`
+
+	Tags []NetworkProfileTagsInitParameters `json:"tags,omitempty" tf:"tags,omitempty"`
+}
+
+type NetworkProfileLinksInitParameters struct {
+}
+
 type NetworkProfileLinksObservation struct {
 	Href *string `json:"href,omitempty" tf:"href,omitempty"`
 
+	// +listType=set
 	Hrefs []*string `json:"hrefs,omitempty" tf:"hrefs,omitempty"`
 
 	Rel *string `json:"rel,omitempty" tf:"rel,omitempty"`
@@ -31,12 +65,14 @@ type NetworkProfileObservation struct {
 
 	CreatedAt *string `json:"createdAt,omitempty" tf:"created_at,omitempty"`
 
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	Description *string `json:"description,omitempty" tf:"description,omitempty"`
 
 	ExternalRegionID *string `json:"externalRegionId,omitempty" tf:"external_region_id,omitempty"`
 
+	// +listType=set
 	FabricNetworkIds []*string `json:"fabricNetworkIds,omitempty" tf:"fabric_network_ids,omitempty"`
 
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
@@ -63,6 +99,7 @@ type NetworkProfileObservation struct {
 
 	RegionID *string `json:"regionId,omitempty" tf:"region_id,omitempty"`
 
+	// +listType=set
 	SecurityGroupIds []*string `json:"securityGroupIds,omitempty" tf:"security_group_ids,omitempty"`
 
 	Tags []NetworkProfileTagsObservation `json:"tags,omitempty" tf:"tags,omitempty"`
@@ -73,12 +110,14 @@ type NetworkProfileObservation struct {
 type NetworkProfileParameters struct {
 
 	// +kubebuilder:validation:Optional
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	// +kubebuilder:validation:Optional
 	Description *string `json:"description,omitempty" tf:"description,omitempty"`
 
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	FabricNetworkIds []*string `json:"fabricNetworkIds,omitempty" tf:"fabric_network_ids,omitempty"`
 
 	// +kubebuilder:validation:Optional
@@ -103,10 +142,17 @@ type NetworkProfileParameters struct {
 	RegionID *string `json:"regionId,omitempty" tf:"region_id,omitempty"`
 
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	SecurityGroupIds []*string `json:"securityGroupIds,omitempty" tf:"security_group_ids,omitempty"`
 
 	// +kubebuilder:validation:Optional
 	Tags []NetworkProfileTagsParameters `json:"tags,omitempty" tf:"tags,omitempty"`
+}
+
+type NetworkProfileTagsInitParameters struct {
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
+	Value *string `json:"value,omitempty" tf:"value,omitempty"`
 }
 
 type NetworkProfileTagsObservation struct {
@@ -117,10 +163,10 @@ type NetworkProfileTagsObservation struct {
 
 type NetworkProfileTagsParameters struct {
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Key *string `json:"key" tf:"key,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Value *string `json:"value" tf:"value,omitempty"`
 }
 
@@ -128,6 +174,17 @@ type NetworkProfileTagsParameters struct {
 type NetworkProfileSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     NetworkProfileParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider NetworkProfileInitParameters `json:"initProvider,omitempty"`
 }
 
 // NetworkProfileStatus defines the observed state of NetworkProfile.
@@ -137,19 +194,20 @@ type NetworkProfileStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // NetworkProfile is the Schema for the NetworkProfiles API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type NetworkProfile struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.regionId)",message="regionId is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.regionId) || (has(self.initProvider) && has(self.initProvider.regionId))",message="spec.forProvider.regionId is a required parameter"
 	Spec   NetworkProfileSpec   `json:"spec"`
 	Status NetworkProfileStatus `json:"status,omitempty"`
 }

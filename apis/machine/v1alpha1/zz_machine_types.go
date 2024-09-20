@@ -13,6 +13,12 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type BootConfigInitParameters struct {
+
+	// A valid cloud config data in json-escaped yaml syntax.
+	Content *string `json:"content,omitempty" tf:"content,omitempty"`
+}
+
 type BootConfigObservation struct {
 
 	// A valid cloud config data in json-escaped yaml syntax.
@@ -24,6 +30,15 @@ type BootConfigParameters struct {
 	// A valid cloud config data in json-escaped yaml syntax.
 	// +kubebuilder:validation:Optional
 	Content *string `json:"content,omitempty" tf:"content,omitempty"`
+}
+
+type ConstraintsInitParameters struct {
+
+	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
+	Expression *string `json:"expression,omitempty" tf:"expression,omitempty"`
+
+	// Indicates whether this constraint should be strictly enforced or not.
+	Mandatory *bool `json:"mandatory,omitempty" tf:"mandatory,omitempty"`
 }
 
 type ConstraintsObservation struct {
@@ -38,12 +53,27 @@ type ConstraintsObservation struct {
 type ConstraintsParameters struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Expression *string `json:"expression" tf:"expression,omitempty"`
 
 	// Indicates whether this constraint should be strictly enforced or not.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Mandatory *bool `json:"mandatory" tf:"mandatory,omitempty"`
+}
+
+type DisksInitParameters struct {
+
+	// The id of the existing block device.
+	BlockDeviceID *string `json:"blockDeviceId,omitempty" tf:"block_device_id,omitempty"`
+
+	// A human-friendly description.
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// A human-friendly block-device name used as an identifier in APIs that support this option.
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+}
+
+type DisksListInitParameters struct {
 }
 
 type DisksListObservation struct {
@@ -72,7 +102,7 @@ type DisksObservation struct {
 type DisksParameters struct {
 
 	// The id of the existing block device.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	BlockDeviceID *string `json:"blockDeviceId" tf:"block_device_id,omitempty"`
 
 	// A human-friendly description.
@@ -82,6 +112,15 @@ type DisksParameters struct {
 	// A human-friendly block-device name used as an identifier in APIs that support this option.
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+}
+
+type ImageDiskConstraintsInitParameters struct {
+
+	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
+	Expression *string `json:"expression,omitempty" tf:"expression,omitempty"`
+
+	// Indicates whether this constraint should be strictly enforced or not.
+	Mandatory *bool `json:"mandatory,omitempty" tf:"mandatory,omitempty"`
 }
 
 type ImageDiskConstraintsObservation struct {
@@ -96,23 +135,76 @@ type ImageDiskConstraintsObservation struct {
 type ImageDiskConstraintsParameters struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Expression *string `json:"expression" tf:"expression,omitempty"`
 
 	// Indicates whether this constraint should be strictly enforced or not.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Mandatory *bool `json:"mandatory" tf:"mandatory,omitempty"`
+}
+
+type LinksInitParameters struct {
 }
 
 type LinksObservation struct {
 	Href *string `json:"href,omitempty" tf:"href,omitempty"`
 
+	// +listType=set
 	Hrefs []*string `json:"hrefs,omitempty" tf:"hrefs,omitempty"`
 
 	Rel *string `json:"rel,omitempty" tf:"rel,omitempty"`
 }
 
 type LinksParameters struct {
+}
+
+type MachineInitParameters struct {
+
+	// Machine boot config that will be passed to the instance that can be used to perform common automated configuration tasks and even run scripts after the instance starts.
+	BootConfig []BootConfigInitParameters `json:"bootConfig,omitempty" tf:"boot_config,omitempty"`
+
+	// Constraints that are used to drive placement policies for entities such as image, network, storage, etc. Constraint expressions are matched against tags on existing placement targets.
+	Constraints []ConstraintsInitParameters `json:"constraints,omitempty" tf:"constraints,omitempty"`
+
+	// Additional custom properties that may be used to extend the machine.
+	// +mapType=granular
+	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
+
+	// The id of the deployment that is associated with this resource.
+	DeploymentID *string `json:"deploymentId,omitempty" tf:"deployment_id,omitempty"`
+
+	// Describes machine within the scope of your organization and is not propagated to the cloud.
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// Specification for attaching/detaching disks to a machine.
+	Disks []DisksInitParameters `json:"disks,omitempty" tf:"disks,omitempty"`
+
+	Flavor *string `json:"flavor,omitempty" tf:"flavor,omitempty"`
+
+	// Type of image used for this machine.
+	Image *string `json:"image,omitempty" tf:"image,omitempty"`
+
+	// Constraints that are used to drive placement policies for entities such as image, network, storage, etc. Constraint expressions are matched against tags on existing placement targets.
+	ImageDiskConstraints []ImageDiskConstraintsInitParameters `json:"imageDiskConstraints,omitempty" tf:"image_disk_constraints,omitempty"`
+
+	ImageRef *string `json:"imageRef,omitempty" tf:"image_ref,omitempty"`
+
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	Nics []NicsInitParameters `json:"nics,omitempty" tf:"nics,omitempty"`
+
+	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/apis/project/v1alpha1.Project
+	ProjectID *string `json:"projectId,omitempty" tf:"project_id,omitempty"`
+
+	// Reference to a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDRef *v1.Reference `json:"projectIdRef,omitempty" tf:"-"`
+
+	// Selector for a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDSelector *v1.Selector `json:"projectIdSelector,omitempty" tf:"-"`
+
+	Tags []TagsInitParameters `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
 type MachineObservation struct {
@@ -127,6 +219,7 @@ type MachineObservation struct {
 	CreatedAt *string `json:"createdAt,omitempty" tf:"created_at,omitempty"`
 
 	// Additional custom properties that may be used to extend the machine.
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	// The id of the deployment that is associated with this resource.
@@ -190,6 +283,7 @@ type MachineParameters struct {
 
 	// Additional custom properties that may be used to extend the machine.
 	// +kubebuilder:validation:Optional
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	// The id of the deployment that is associated with this resource.
@@ -240,9 +334,10 @@ type MachineParameters struct {
 	Tags []TagsParameters `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
-type NicsObservation struct {
+type NicsInitParameters struct {
 	Addresses []*string `json:"addresses,omitempty" tf:"addresses,omitempty"`
 
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	Description *string `json:"description,omitempty" tf:"description,omitempty"`
@@ -253,6 +348,25 @@ type NicsObservation struct {
 
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
 
+	// +listType=set
+	SecurityGroupIds []*string `json:"securityGroupIds,omitempty" tf:"security_group_ids,omitempty"`
+}
+
+type NicsObservation struct {
+	Addresses []*string `json:"addresses,omitempty" tf:"addresses,omitempty"`
+
+	// +mapType=granular
+	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
+
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	DeviceIndex *float64 `json:"deviceIndex,omitempty" tf:"device_index,omitempty"`
+
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// +listType=set
 	SecurityGroupIds []*string `json:"securityGroupIds,omitempty" tf:"security_group_ids,omitempty"`
 }
 
@@ -262,6 +376,7 @@ type NicsParameters struct {
 	Addresses []*string `json:"addresses,omitempty" tf:"addresses,omitempty"`
 
 	// +kubebuilder:validation:Optional
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	// +kubebuilder:validation:Optional
@@ -273,11 +388,18 @@ type NicsParameters struct {
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	NetworkID *string `json:"networkId" tf:"network_id,omitempty"`
 
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	SecurityGroupIds []*string `json:"securityGroupIds,omitempty" tf:"security_group_ids,omitempty"`
+}
+
+type TagsInitParameters struct {
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
+	Value *string `json:"value,omitempty" tf:"value,omitempty"`
 }
 
 type TagsObservation struct {
@@ -288,10 +410,10 @@ type TagsObservation struct {
 
 type TagsParameters struct {
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Key *string `json:"key" tf:"key,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Value *string `json:"value" tf:"value,omitempty"`
 }
 
@@ -299,6 +421,17 @@ type TagsParameters struct {
 type MachineSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     MachineParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider MachineInitParameters `json:"initProvider,omitempty"`
 }
 
 // MachineStatus defines the observed state of Machine.
@@ -308,19 +441,20 @@ type MachineStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // Machine is the Schema for the Machines API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type Machine struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.flavor)",message="flavor is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.flavor) || (has(self.initProvider) && has(self.initProvider.flavor))",message="spec.forProvider.flavor is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
 	Spec   MachineSpec   `json:"spec"`
 	Status MachineStatus `json:"status,omitempty"`
 }

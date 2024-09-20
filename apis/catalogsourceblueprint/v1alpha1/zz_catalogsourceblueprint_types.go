@@ -13,7 +13,30 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type CatalogSourceBlueprintInitParameters struct {
+
+	// +mapType=granular
+	Config map[string]*string `json:"config,omitempty" tf:"config,omitempty"`
+
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/apis/project/v1alpha1.Project
+	ProjectID *string `json:"projectId,omitempty" tf:"project_id,omitempty"`
+
+	// Reference to a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDRef *v1.Reference `json:"projectIdRef,omitempty" tf:"-"`
+
+	// Selector for a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDSelector *v1.Selector `json:"projectIdSelector,omitempty" tf:"-"`
+}
+
 type CatalogSourceBlueprintObservation struct {
+
+	// +mapType=granular
 	Config map[string]*string `json:"config,omitempty" tf:"config,omitempty"`
 
 	CreatedAt *string `json:"createdAt,omitempty" tf:"created_at,omitempty"`
@@ -32,6 +55,7 @@ type CatalogSourceBlueprintObservation struct {
 
 	LastImportCompletedAt *string `json:"lastImportCompletedAt,omitempty" tf:"last_import_completed_at,omitempty"`
 
+	// +listType=set
 	LastImportErrors []*string `json:"lastImportErrors,omitempty" tf:"last_import_errors,omitempty"`
 
 	LastImportStartedAt *string `json:"lastImportStartedAt,omitempty" tf:"last_import_started_at,omitempty"`
@@ -48,6 +72,7 @@ type CatalogSourceBlueprintObservation struct {
 type CatalogSourceBlueprintParameters struct {
 
 	// +kubebuilder:validation:Optional
+	// +mapType=granular
 	Config map[string]*string `json:"config,omitempty" tf:"config,omitempty"`
 
 	// +kubebuilder:validation:Optional
@@ -73,6 +98,17 @@ type CatalogSourceBlueprintParameters struct {
 type CatalogSourceBlueprintSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     CatalogSourceBlueprintParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider CatalogSourceBlueprintInitParameters `json:"initProvider,omitempty"`
 }
 
 // CatalogSourceBlueprintStatus defines the observed state of CatalogSourceBlueprint.
@@ -82,18 +118,19 @@ type CatalogSourceBlueprintStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // CatalogSourceBlueprint is the Schema for the CatalogSourceBlueprints API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type CatalogSourceBlueprint struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
 	Spec   CatalogSourceBlueprintSpec   `json:"spec"`
 	Status CatalogSourceBlueprintStatus `json:"status,omitempty"`
 }

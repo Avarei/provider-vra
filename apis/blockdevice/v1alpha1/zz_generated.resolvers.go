@@ -36,6 +36,22 @@ func (mg *BlockDevice) ResolveReferences(ctx context.Context, c client.Reader) e
 	mg.Spec.ForProvider.ProjectID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.ForProvider.ProjectIDRef = rsp.ResolvedReference
 
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.ProjectID),
+		Extract:      reference.ExternalName(),
+		Reference:    mg.Spec.InitProvider.ProjectIDRef,
+		Selector:     mg.Spec.InitProvider.ProjectIDSelector,
+		To: reference.To{
+			List:    &v1alpha1.ProjectList{},
+			Managed: &v1alpha1.Project{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.InitProvider.ProjectID")
+	}
+	mg.Spec.InitProvider.ProjectID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.InitProvider.ProjectIDRef = rsp.ResolvedReference
+
 	return nil
 }
 
@@ -61,6 +77,22 @@ func (mg *BlockDeviceSnapshot) ResolveReferences(ctx context.Context, c client.R
 	}
 	mg.Spec.ForProvider.BlockDeviceID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.ForProvider.BlockDeviceIDRef = rsp.ResolvedReference
+
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.BlockDeviceID),
+		Extract:      reference.ExternalName(),
+		Reference:    mg.Spec.InitProvider.BlockDeviceIDRef,
+		Selector:     mg.Spec.InitProvider.BlockDeviceIDSelector,
+		To: reference.To{
+			List:    &BlockDeviceList{},
+			Managed: &BlockDevice{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.InitProvider.BlockDeviceID")
+	}
+	mg.Spec.InitProvider.BlockDeviceID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.InitProvider.BlockDeviceIDRef = rsp.ResolvedReference
 
 	return nil
 }

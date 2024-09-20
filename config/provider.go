@@ -25,7 +25,7 @@ import (
 	project "github.com/avarei/provider-vra/config/project"
 	storage "github.com/avarei/provider-vra/config/storage"
 	zone "github.com/avarei/provider-vra/config/zone"
-	ujconfig "github.com/upbound/upjet/pkg/config"
+	ujconfig "github.com/crossplane/upjet/pkg/config"
 )
 
 const (

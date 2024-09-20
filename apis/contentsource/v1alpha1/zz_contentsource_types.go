@@ -13,6 +13,20 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type ConfigInitParameters struct {
+	Branch *string `json:"branch,omitempty" tf:"branch,omitempty"`
+
+	ContentType *string `json:"contentType,omitempty" tf:"content_type,omitempty"`
+
+	IntegrationID *string `json:"integrationId,omitempty" tf:"integration_id,omitempty"`
+
+	Path *string `json:"path,omitempty" tf:"path,omitempty"`
+
+	ProjectName *string `json:"projectName,omitempty" tf:"project_name,omitempty"`
+
+	Repository *string `json:"repository,omitempty" tf:"repository,omitempty"`
+}
+
 type ConfigObservation struct {
 	Branch *string `json:"branch,omitempty" tf:"branch,omitempty"`
 
@@ -35,17 +49,40 @@ type ConfigParameters struct {
 	// +kubebuilder:validation:Optional
 	ContentType *string `json:"contentType,omitempty" tf:"content_type,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	IntegrationID *string `json:"integrationId" tf:"integration_id,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Path *string `json:"path" tf:"path,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	ProjectName *string `json:"projectName" tf:"project_name,omitempty"`
 
 	// +kubebuilder:validation:Optional
 	Repository *string `json:"repository,omitempty" tf:"repository,omitempty"`
+}
+
+type ContentSourceInitParameters struct {
+	Config []ConfigInitParameters `json:"config,omitempty" tf:"config,omitempty"`
+
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/apis/project/v1alpha1.Project
+	ProjectID *string `json:"projectId,omitempty" tf:"project_id,omitempty"`
+
+	// Reference to a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDRef *v1.Reference `json:"projectIdRef,omitempty" tf:"-"`
+
+	// Selector for a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDSelector *v1.Selector `json:"projectIdSelector,omitempty" tf:"-"`
+
+	SyncEnabled *bool `json:"syncEnabled,omitempty" tf:"sync_enabled,omitempty"`
+
+	TypeID *string `json:"typeId,omitempty" tf:"type_id,omitempty"`
 }
 
 type ContentSourceObservation struct {
@@ -108,6 +145,17 @@ type ContentSourceParameters struct {
 type ContentSourceSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     ContentSourceParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider ContentSourceInitParameters `json:"initProvider,omitempty"`
 }
 
 // ContentSourceStatus defines the observed state of ContentSource.
@@ -117,21 +165,22 @@ type ContentSourceStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // ContentSource is the Schema for the ContentSources API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type ContentSource struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.config)",message="config is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.syncEnabled)",message="syncEnabled is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.typeId)",message="typeId is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.config) || (has(self.initProvider) && has(self.initProvider.config))",message="spec.forProvider.config is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.syncEnabled) || (has(self.initProvider) && has(self.initProvider.syncEnabled))",message="spec.forProvider.syncEnabled is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.typeId) || (has(self.initProvider) && has(self.initProvider.typeId))",message="spec.forProvider.typeId is a required parameter"
 	Spec   ContentSourceSpec   `json:"spec"`
 	Status ContentSourceStatus `json:"status,omitempty"`
 }

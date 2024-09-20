@@ -13,6 +13,15 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type ConstraintsInitParameters struct {
+
+	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
+	Expression *string `json:"expression,omitempty" tf:"expression,omitempty"`
+
+	// Indicates whether this constraint should be strictly enforced or not.
+	Mandatory *bool `json:"mandatory,omitempty" tf:"mandatory,omitempty"`
+}
+
 type ConstraintsObservation struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
@@ -25,12 +34,30 @@ type ConstraintsObservation struct {
 type ConstraintsParameters struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Expression *string `json:"expression" tf:"expression,omitempty"`
 
 	// Indicates whether this constraint should be strictly enforced or not.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Mandatory *bool `json:"mandatory" tf:"mandatory,omitempty"`
+}
+
+type ImageMappingInitParameters struct {
+
+	// Cloud config for this image. This cloud config will be merged during provisioning with other cloud configurations such as the bootConfig provided in MachineSpecification or vRA cloud templates.
+	CloudConfig *string `json:"cloudConfig,omitempty" tf:"cloud_config,omitempty"`
+
+	// Constraints that are used to drive placement policies for entities such as image, network, storage, etc. Constraint expressions are matched against tags on existing placement targets.
+	Constraints []ConstraintsInitParameters `json:"constraints,omitempty" tf:"constraints,omitempty"`
+
+	// The id of this resource instance.
+	ImageID *string `json:"imageId,omitempty" tf:"image_id,omitempty"`
+
+	// A human-friendly image name as seen on the cloud provider side.
+	ImageName *string `json:"imageName,omitempty" tf:"image_name,omitempty"`
+
+	// A human-friendly name of the image mapping.
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 }
 
 type ImageMappingObservation struct {
@@ -91,8 +118,22 @@ type ImageMappingParameters struct {
 	ImageName *string `json:"imageName,omitempty" tf:"image_name,omitempty"`
 
 	// A human-friendly name of the image mapping.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Name *string `json:"name" tf:"name,omitempty"`
+}
+
+type ProfileInitParameters struct {
+
+	// A human-friendly description.
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	ImageMapping []ImageMappingInitParameters `json:"imageMapping,omitempty" tf:"image_mapping,omitempty"`
+
+	// A human-friendly name used as an identifier in APIs that support this option.
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// The if of the region for which this profile is defined as in vRealize Automation(vRA).
+	RegionID *string `json:"regionId,omitempty" tf:"region_id,omitempty"`
 }
 
 type ProfileObservation struct {
@@ -145,6 +186,17 @@ type ProfileParameters struct {
 type ProfileSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     ProfileParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider ProfileInitParameters `json:"initProvider,omitempty"`
 }
 
 // ProfileStatus defines the observed state of Profile.
@@ -154,19 +206,20 @@ type ProfileStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // Profile is the Schema for the Profiles API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type Profile struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.regionId)",message="regionId is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.regionId) || (has(self.initProvider) && has(self.initProvider.regionId))",message="spec.forProvider.regionId is a required parameter"
 	Spec   ProfileSpec   `json:"spec"`
 	Status ProfileStatus `json:"status,omitempty"`
 }

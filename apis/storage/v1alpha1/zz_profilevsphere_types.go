@@ -13,9 +13,57 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type ProfileVsphereInitParameters struct {
+
+	// Id of the vSphere Datastore for placing disk and VM.
+	DatastoreID *string `json:"datastoreId,omitempty" tf:"datastore_id,omitempty"`
+
+	// Indicates if a storage profile acts as a default storage profile for a disk.
+	DefaultItem *bool `json:"defaultItem,omitempty" tf:"default_item,omitempty"`
+
+	// A human-friendly description.
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// Type of mode for the disk. Omitting this value will set it to dependent. example: dependent / independent-persistent / independent-nonpersistent.
+	DiskMode *string `json:"diskMode,omitempty" tf:"disk_mode,omitempty"`
+
+	// Disk types are specified as standard or first class, empty value is considered as standard.
+	DiskType *string `json:"diskType,omitempty" tf:"disk_type,omitempty"`
+
+	// The upper bound for the I/O operations per second allocated for each virtual disk.
+	LimitIops *string `json:"limitIops,omitempty" tf:"limit_iops,omitempty"`
+
+	// A human-friendly name used as an identifier in APIs that support this option.
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// Type of provisioning policy for the disk.
+	ProvisioningType *string `json:"provisioningType,omitempty" tf:"provisioning_type,omitempty"`
+
+	// The Id of the region that is associated with the storage profile.
+	RegionID *string `json:"regionId,omitempty" tf:"region_id,omitempty"`
+
+	// A specific number of shares assigned to each virtual machine.
+	Shares *string `json:"shares,omitempty" tf:"shares,omitempty"`
+
+	// Indicates whether this storage profile supports encryption or not.
+	SharesLevel *string `json:"sharesLevel,omitempty" tf:"shares_level,omitempty"`
+
+	// Id of the vSphere Storage Policy to be applied.
+	StoragePolicyID *string `json:"storagePolicyId,omitempty" tf:"storage_policy_id,omitempty"`
+
+	// Indicates whether this storage profile supports encryption or not.
+	SupportsEncryption *bool `json:"supportsEncryption,omitempty" tf:"supports_encryption,omitempty"`
+
+	Tags []ProfileVsphereTagsInitParameters `json:"tags,omitempty" tf:"tags,omitempty"`
+}
+
+type ProfileVsphereLinksInitParameters struct {
+}
+
 type ProfileVsphereLinksObservation struct {
 	Href *string `json:"href,omitempty" tf:"href,omitempty"`
 
+	// +listType=set
 	Hrefs []*string `json:"hrefs,omitempty" tf:"hrefs,omitempty"`
 
 	Rel *string `json:"rel,omitempty" tf:"rel,omitempty"`
@@ -148,6 +196,12 @@ type ProfileVsphereParameters struct {
 	Tags []ProfileVsphereTagsParameters `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
+type ProfileVsphereTagsInitParameters struct {
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
+	Value *string `json:"value,omitempty" tf:"value,omitempty"`
+}
+
 type ProfileVsphereTagsObservation struct {
 	Key *string `json:"key,omitempty" tf:"key,omitempty"`
 
@@ -156,10 +210,10 @@ type ProfileVsphereTagsObservation struct {
 
 type ProfileVsphereTagsParameters struct {
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Key *string `json:"key" tf:"key,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Value *string `json:"value" tf:"value,omitempty"`
 }
 
@@ -167,6 +221,17 @@ type ProfileVsphereTagsParameters struct {
 type ProfileVsphereSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     ProfileVsphereParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider ProfileVsphereInitParameters `json:"initProvider,omitempty"`
 }
 
 // ProfileVsphereStatus defines the observed state of ProfileVsphere.
@@ -176,20 +241,21 @@ type ProfileVsphereStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // ProfileVsphere is the Schema for the ProfileVspheres API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type ProfileVsphere struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.defaultItem)",message="defaultItem is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.regionId)",message="regionId is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.defaultItem) || (has(self.initProvider) && has(self.initProvider.defaultItem))",message="spec.forProvider.defaultItem is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.regionId) || (has(self.initProvider) && has(self.initProvider.regionId))",message="spec.forProvider.regionId is a required parameter"
 	Spec   ProfileVsphereSpec   `json:"spec"`
 	Status ProfileVsphereStatus `json:"status,omitempty"`
 }

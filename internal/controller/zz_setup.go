@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Upbound Inc.
+Copyright 2023 Upbound Inc. - ANKASOFT
 */
 
 package controller
@@ -7,7 +7,7 @@ package controller
 import (
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/upbound/upjet/pkg/controller"
+	"github.com/crossplane/upjet/pkg/controller"
 
 	blockdevice "github.com/avarei/provider-vra/internal/controller/blockdevice/blockdevice"
 	blockdevicesnapshot "github.com/avarei/provider-vra/internal/controller/blockdevice/blockdevicesnapshot"

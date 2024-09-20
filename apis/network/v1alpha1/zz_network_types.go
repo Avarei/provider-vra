@@ -13,6 +13,15 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type ConstraintsInitParameters struct {
+
+	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
+	Expression *string `json:"expression,omitempty" tf:"expression,omitempty"`
+
+	// Indicates whether this constraint should be strictly enforced or not.
+	Mandatory *bool `json:"mandatory,omitempty" tf:"mandatory,omitempty"`
+}
+
 type ConstraintsObservation struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
@@ -25,17 +34,21 @@ type ConstraintsObservation struct {
 type ConstraintsParameters struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Expression *string `json:"expression" tf:"expression,omitempty"`
 
 	// Indicates whether this constraint should be strictly enforced or not.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Mandatory *bool `json:"mandatory" tf:"mandatory,omitempty"`
+}
+
+type LinksInitParameters struct {
 }
 
 type LinksObservation struct {
 	Href *string `json:"href,omitempty" tf:"href,omitempty"`
 
+	// +listType=set
 	Hrefs []*string `json:"hrefs,omitempty" tf:"hrefs,omitempty"`
 
 	Rel *string `json:"rel,omitempty" tf:"rel,omitempty"`
@@ -44,12 +57,43 @@ type LinksObservation struct {
 type LinksParameters struct {
 }
 
+type NetworkInitParameters struct {
+
+	// Constraints that are used to drive placement policies for entities such as image, network, storage, etc. Constraint expressions are matched against tags on existing placement targets.
+	Constraints []ConstraintsInitParameters `json:"constraints,omitempty" tf:"constraints,omitempty"`
+
+	// +mapType=granular
+	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
+
+	DeploymentID *string `json:"deploymentId,omitempty" tf:"deployment_id,omitempty"`
+
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	OutboundAccess *bool `json:"outboundAccess,omitempty" tf:"outbound_access,omitempty"`
+
+	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/apis/project/v1alpha1.Project
+	ProjectID *string `json:"projectId,omitempty" tf:"project_id,omitempty"`
+
+	// Reference to a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDRef *v1.Reference `json:"projectIdRef,omitempty" tf:"-"`
+
+	// Selector for a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDSelector *v1.Selector `json:"projectIdSelector,omitempty" tf:"-"`
+
+	Tags []TagsInitParameters `json:"tags,omitempty" tf:"tags,omitempty"`
+}
+
 type NetworkObservation struct {
 	Cidr *string `json:"cidr,omitempty" tf:"cidr,omitempty"`
 
 	// Constraints that are used to drive placement policies for entities such as image, network, storage, etc. Constraint expressions are matched against tags on existing placement targets.
 	Constraints []ConstraintsObservation `json:"constraints,omitempty" tf:"constraints,omitempty"`
 
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	DeploymentID *string `json:"deploymentId,omitempty" tf:"deployment_id,omitempty"`
@@ -88,6 +132,7 @@ type NetworkParameters struct {
 	Constraints []ConstraintsParameters `json:"constraints,omitempty" tf:"constraints,omitempty"`
 
 	// +kubebuilder:validation:Optional
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	// +kubebuilder:validation:Optional
@@ -118,6 +163,12 @@ type NetworkParameters struct {
 	Tags []TagsParameters `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
+type TagsInitParameters struct {
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
+	Value *string `json:"value,omitempty" tf:"value,omitempty"`
+}
+
 type TagsObservation struct {
 	Key *string `json:"key,omitempty" tf:"key,omitempty"`
 
@@ -126,10 +177,10 @@ type TagsObservation struct {
 
 type TagsParameters struct {
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Key *string `json:"key" tf:"key,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Value *string `json:"value" tf:"value,omitempty"`
 }
 
@@ -137,6 +188,17 @@ type TagsParameters struct {
 type NetworkSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     NetworkParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider NetworkInitParameters `json:"initProvider,omitempty"`
 }
 
 // NetworkStatus defines the observed state of Network.
@@ -146,18 +208,19 @@ type NetworkStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // Network is the Schema for the Networks API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type Network struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
 	Spec   NetworkSpec   `json:"spec"`
 	Status NetworkStatus `json:"status,omitempty"`
 }

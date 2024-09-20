@@ -13,6 +13,15 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type AdministratorRolesInitParameters struct {
+
+	// The email of the user or name of the group.
+	Email *string `json:"email,omitempty" tf:"email,omitempty"`
+
+	// Type of the principal. Currently supported ‘user’ (default) and 'group’.
+	Type *string `json:"type,omitempty" tf:"type,omitempty"`
+}
+
 type AdministratorRolesObservation struct {
 
 	// The email of the user or name of the group.
@@ -25,12 +34,24 @@ type AdministratorRolesObservation struct {
 type AdministratorRolesParameters struct {
 
 	// The email of the user or name of the group.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Email *string `json:"email" tf:"email,omitempty"`
 
 	// Type of the principal. Currently supported ‘user’ (default) and 'group’.
 	// +kubebuilder:validation:Optional
 	Type *string `json:"type,omitempty" tf:"type,omitempty"`
+}
+
+type ConstraintsInitParameters struct {
+
+	// Constraints that are used to drive placement policies for entities such as image, network, storage, etc. Constraint expressions are matched against tags on existing placement targets.
+	Extensibility []ExtensibilityInitParameters `json:"extensibility,omitempty" tf:"extensibility,omitempty"`
+
+	// Constraints that are used to drive placement policies for entities such as image, network, storage, etc. Constraint expressions are matched against tags on existing placement targets.
+	Network []NetworkInitParameters `json:"network,omitempty" tf:"network,omitempty"`
+
+	// Constraints that are used to drive placement policies for entities such as image, network, storage, etc. Constraint expressions are matched against tags on existing placement targets.
+	Storage []StorageInitParameters `json:"storage,omitempty" tf:"storage,omitempty"`
 }
 
 type ConstraintsObservation struct {
@@ -60,6 +81,15 @@ type ConstraintsParameters struct {
 	Storage []StorageParameters `json:"storage,omitempty" tf:"storage,omitempty"`
 }
 
+type ExtensibilityInitParameters struct {
+
+	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
+	Expression *string `json:"expression,omitempty" tf:"expression,omitempty"`
+
+	// Indicates whether this constraint should be strictly enforced or not.
+	Mandatory *bool `json:"mandatory,omitempty" tf:"mandatory,omitempty"`
+}
+
 type ExtensibilityObservation struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
@@ -72,12 +102,21 @@ type ExtensibilityObservation struct {
 type ExtensibilityParameters struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Expression *string `json:"expression" tf:"expression,omitempty"`
 
 	// Indicates whether this constraint should be strictly enforced or not.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Mandatory *bool `json:"mandatory" tf:"mandatory,omitempty"`
+}
+
+type MemberRolesInitParameters struct {
+
+	// The email of the user or name of the group.
+	Email *string `json:"email,omitempty" tf:"email,omitempty"`
+
+	// Type of the principal. Currently supported ‘user’ (default) and 'group’.
+	Type *string `json:"type,omitempty" tf:"type,omitempty"`
 }
 
 type MemberRolesObservation struct {
@@ -92,12 +131,21 @@ type MemberRolesObservation struct {
 type MemberRolesParameters struct {
 
 	// The email of the user or name of the group.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Email *string `json:"email" tf:"email,omitempty"`
 
 	// Type of the principal. Currently supported ‘user’ (default) and 'group’.
 	// +kubebuilder:validation:Optional
 	Type *string `json:"type,omitempty" tf:"type,omitempty"`
+}
+
+type NetworkInitParameters struct {
+
+	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
+	Expression *string `json:"expression,omitempty" tf:"expression,omitempty"`
+
+	// Indicates whether this constraint should be strictly enforced or not.
+	Mandatory *bool `json:"mandatory,omitempty" tf:"mandatory,omitempty"`
 }
 
 type NetworkObservation struct {
@@ -112,12 +160,67 @@ type NetworkObservation struct {
 type NetworkParameters struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Expression *string `json:"expression" tf:"expression,omitempty"`
 
 	// Indicates whether this constraint should be strictly enforced or not.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Mandatory *bool `json:"mandatory" tf:"mandatory,omitempty"`
+}
+
+type ProjectInitParameters struct {
+
+	// List of administrator roles associated with the project. Only administrators can manage project's configuration.
+	AdministratorRoles []AdministratorRolesInitParameters `json:"administratorRoles,omitempty" tf:"administrator_roles,omitempty"`
+
+	// List of administrator users associated with the project. Only administrators can manage project's configuration.
+	// +listType=set
+	Administrators []*string `json:"administrators,omitempty" tf:"administrators,omitempty"`
+
+	// List of storage, network and extensibility constraints to be applied when provisioning through this project.
+	Constraints []ConstraintsInitParameters `json:"constraints,omitempty" tf:"constraints,omitempty"`
+
+	// The project custom properties which are added to all requests in this project
+	// +mapType=granular
+	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
+
+	// A human-friendly description.
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// The naming template to be used for resources provisioned in this project.
+	MachineNamingTemplate *string `json:"machineNamingTemplate,omitempty" tf:"machine_naming_template,omitempty"`
+
+	// List of member roles associated with the project.
+	MemberRoles []MemberRolesInitParameters `json:"memberRoles,omitempty" tf:"member_roles,omitempty"`
+
+	// List of member users associated with the project.
+	// +listType=set
+	Members []*string `json:"members,omitempty" tf:"members,omitempty"`
+
+	// A human-friendly name used as an identifier in APIs that support this option.
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// The timeout that should be used for Blueprint operations and Provisioning tasks. The timeout is in seconds.
+	OperationTimeout *float64 `json:"operationTimeout,omitempty" tf:"operation_timeout,omitempty"`
+
+	// The placement policy that will be applied when selecting a cloud zone for provisioning.
+	PlacementPolicy *string `json:"placementPolicy,omitempty" tf:"placement_policy,omitempty"`
+
+	// Specifies whether the resources in this projects are shared or not. If not set default will be used.
+	SharedResources *bool `json:"sharedResources,omitempty" tf:"shared_resources,omitempty"`
+
+	// List of supervisor roles associated with the project.
+	SupervisorRoles []SupervisorRolesInitParameters `json:"supervisorRoles,omitempty" tf:"supervisor_roles,omitempty"`
+
+	// List of viewer roles associated with the project.
+	ViewerRoles []ViewerRolesInitParameters `json:"viewerRoles,omitempty" tf:"viewer_roles,omitempty"`
+
+	// List of viewer users associated with the project.
+	// +listType=set
+	Viewers []*string `json:"viewers,omitempty" tf:"viewers,omitempty"`
+
+	// List of configurations for zone assignment to a project.
+	ZoneAssignments []ZoneAssignmentsInitParameters `json:"zoneAssignments,omitempty" tf:"zone_assignments,omitempty"`
 }
 
 type ProjectObservation struct {
@@ -126,12 +229,14 @@ type ProjectObservation struct {
 	AdministratorRoles []AdministratorRolesObservation `json:"administratorRoles,omitempty" tf:"administrator_roles,omitempty"`
 
 	// List of administrator users associated with the project. Only administrators can manage project's configuration.
+	// +listType=set
 	Administrators []*string `json:"administrators,omitempty" tf:"administrators,omitempty"`
 
 	// List of storage, network and extensibility constraints to be applied when provisioning through this project.
 	Constraints []ConstraintsObservation `json:"constraints,omitempty" tf:"constraints,omitempty"`
 
 	// The project custom properties which are added to all requests in this project
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	// A human-friendly description.
@@ -146,6 +251,7 @@ type ProjectObservation struct {
 	MemberRoles []MemberRolesObservation `json:"memberRoles,omitempty" tf:"member_roles,omitempty"`
 
 	// List of member users associated with the project.
+	// +listType=set
 	Members []*string `json:"members,omitempty" tf:"members,omitempty"`
 
 	// A human-friendly name used as an identifier in APIs that support this option.
@@ -167,6 +273,7 @@ type ProjectObservation struct {
 	ViewerRoles []ViewerRolesObservation `json:"viewerRoles,omitempty" tf:"viewer_roles,omitempty"`
 
 	// List of viewer users associated with the project.
+	// +listType=set
 	Viewers []*string `json:"viewers,omitempty" tf:"viewers,omitempty"`
 
 	// List of configurations for zone assignment to a project.
@@ -181,6 +288,7 @@ type ProjectParameters struct {
 
 	// List of administrator users associated with the project. Only administrators can manage project's configuration.
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	Administrators []*string `json:"administrators,omitempty" tf:"administrators,omitempty"`
 
 	// List of storage, network and extensibility constraints to be applied when provisioning through this project.
@@ -189,6 +297,7 @@ type ProjectParameters struct {
 
 	// The project custom properties which are added to all requests in this project
 	// +kubebuilder:validation:Optional
+	// +mapType=granular
 	CustomProperties map[string]*string `json:"customProperties,omitempty" tf:"custom_properties,omitempty"`
 
 	// A human-friendly description.
@@ -205,6 +314,7 @@ type ProjectParameters struct {
 
 	// List of member users associated with the project.
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	Members []*string `json:"members,omitempty" tf:"members,omitempty"`
 
 	// A human-friendly name used as an identifier in APIs that support this option.
@@ -233,11 +343,21 @@ type ProjectParameters struct {
 
 	// List of viewer users associated with the project.
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	Viewers []*string `json:"viewers,omitempty" tf:"viewers,omitempty"`
 
 	// List of configurations for zone assignment to a project.
 	// +kubebuilder:validation:Optional
 	ZoneAssignments []ZoneAssignmentsParameters `json:"zoneAssignments,omitempty" tf:"zone_assignments,omitempty"`
+}
+
+type StorageInitParameters struct {
+
+	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
+	Expression *string `json:"expression,omitempty" tf:"expression,omitempty"`
+
+	// Indicates whether this constraint should be strictly enforced or not.
+	Mandatory *bool `json:"mandatory,omitempty" tf:"mandatory,omitempty"`
 }
 
 type StorageObservation struct {
@@ -252,12 +372,21 @@ type StorageObservation struct {
 type StorageParameters struct {
 
 	// An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Expression *string `json:"expression" tf:"expression,omitempty"`
 
 	// Indicates whether this constraint should be strictly enforced or not.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Mandatory *bool `json:"mandatory" tf:"mandatory,omitempty"`
+}
+
+type SupervisorRolesInitParameters struct {
+
+	// The email of the user or name of the group.
+	Email *string `json:"email,omitempty" tf:"email,omitempty"`
+
+	// Type of the principal. Currently supported ‘user’ (default) and 'group’.
+	Type *string `json:"type,omitempty" tf:"type,omitempty"`
 }
 
 type SupervisorRolesObservation struct {
@@ -272,11 +401,20 @@ type SupervisorRolesObservation struct {
 type SupervisorRolesParameters struct {
 
 	// The email of the user or name of the group.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Email *string `json:"email" tf:"email,omitempty"`
 
 	// Type of the principal. Currently supported ‘user’ (default) and 'group’.
 	// +kubebuilder:validation:Optional
+	Type *string `json:"type,omitempty" tf:"type,omitempty"`
+}
+
+type ViewerRolesInitParameters struct {
+
+	// The email of the user or name of the group.
+	Email *string `json:"email,omitempty" tf:"email,omitempty"`
+
+	// Type of the principal. Currently supported ‘user’ (default) and 'group’.
 	Type *string `json:"type,omitempty" tf:"type,omitempty"`
 }
 
@@ -292,12 +430,33 @@ type ViewerRolesObservation struct {
 type ViewerRolesParameters struct {
 
 	// The email of the user or name of the group.
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Email *string `json:"email" tf:"email,omitempty"`
 
 	// Type of the principal. Currently supported ‘user’ (default) and 'group’.
 	// +kubebuilder:validation:Optional
 	Type *string `json:"type,omitempty" tf:"type,omitempty"`
+}
+
+type ZoneAssignmentsInitParameters struct {
+
+	// The maximum amount of cpus that can be used by this cloud zone. Default is 0 (unlimited cpu).
+	CPULimit *float64 `json:"cpuLimit,omitempty" tf:"cpu_limit,omitempty"`
+
+	// The maximum number of instances that can be provisioned in this cloud zone. Default is 0 (unlimited instances)
+	MaxInstances *float64 `json:"maxInstances,omitempty" tf:"max_instances,omitempty"`
+
+	// The maximum amount of memory that can be used by this cloud zone. Default is 0 (unlimited memory).
+	MemoryLimitMb *float64 `json:"memoryLimitMb,omitempty" tf:"memory_limit_mb,omitempty"`
+
+	// The priority of this zone in the current project. Lower numbers mean higher priority. Default is 0 (highest)
+	Priority *float64 `json:"priority,omitempty" tf:"priority,omitempty"`
+
+	// Upper limit on storage that can be requested from a cloud zone which is part of this project. Default is 0 (unlimited storage). Supported only for vSphere cloud zones.
+	StorageLimitGb *float64 `json:"storageLimitGb,omitempty" tf:"storage_limit_gb,omitempty"`
+
+	// The Cloud Zone Id
+	ZoneID *string `json:"zoneId,omitempty" tf:"zone_id,omitempty"`
 }
 
 type ZoneAssignmentsObservation struct {
@@ -344,7 +503,7 @@ type ZoneAssignmentsParameters struct {
 	StorageLimitGb *float64 `json:"storageLimitGb,omitempty" tf:"storage_limit_gb,omitempty"`
 
 	// The Cloud Zone Id
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	ZoneID *string `json:"zoneId" tf:"zone_id,omitempty"`
 }
 
@@ -352,6 +511,17 @@ type ZoneAssignmentsParameters struct {
 type ProjectSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     ProjectParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider ProjectInitParameters `json:"initProvider,omitempty"`
 }
 
 // ProjectStatus defines the observed state of Project.
@@ -361,18 +531,19 @@ type ProjectStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // Project is the Schema for the Projects API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type Project struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
 	Spec   ProjectSpec   `json:"spec"`
 	Status ProjectStatus `json:"status,omitempty"`
 }

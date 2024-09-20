@@ -17,22 +17,14 @@ func (mg *Compute) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this Compute.
-func (mg *Compute) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this Compute.
+func (mg *Compute) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this Compute.
 func (mg *Compute) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this Compute.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *Compute) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this Compute.
@@ -55,22 +47,14 @@ func (mg *Compute) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this Compute.
-func (mg *Compute) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this Compute.
+func (mg *Compute) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this Compute.
 func (mg *Compute) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this Compute.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *Compute) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this Compute.
@@ -93,22 +77,14 @@ func (mg *DatastoreVsphere) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this DatastoreVsphere.
-func (mg *DatastoreVsphere) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this DatastoreVsphere.
+func (mg *DatastoreVsphere) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this DatastoreVsphere.
 func (mg *DatastoreVsphere) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this DatastoreVsphere.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *DatastoreVsphere) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this DatastoreVsphere.
@@ -131,22 +107,14 @@ func (mg *DatastoreVsphere) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this DatastoreVsphere.
-func (mg *DatastoreVsphere) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this DatastoreVsphere.
+func (mg *DatastoreVsphere) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this DatastoreVsphere.
 func (mg *DatastoreVsphere) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this DatastoreVsphere.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *DatastoreVsphere) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this DatastoreVsphere.
@@ -169,22 +137,14 @@ func (mg *NetworkVsphere) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this NetworkVsphere.
-func (mg *NetworkVsphere) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this NetworkVsphere.
+func (mg *NetworkVsphere) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this NetworkVsphere.
 func (mg *NetworkVsphere) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this NetworkVsphere.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *NetworkVsphere) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this NetworkVsphere.
@@ -207,22 +167,14 @@ func (mg *NetworkVsphere) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this NetworkVsphere.
-func (mg *NetworkVsphere) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this NetworkVsphere.
+func (mg *NetworkVsphere) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this NetworkVsphere.
 func (mg *NetworkVsphere) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this NetworkVsphere.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *NetworkVsphere) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this NetworkVsphere.
