@@ -4,13 +4,13 @@
 
 run:
   timeout: 90m
-  show-stats: true
   concurrency: 1
 
 output:
-  # colored-line-number|line-number|json|tab|checkstyle|code-climate, default is "colored-line-number"
-  format: colored-line-number
+  formats:
+    - format: colored-line-number
   print-linter-name: true
+  show-stats: true
 
 linters-settings:
   errcheck:
@@ -108,8 +108,9 @@ linters-settings:
 
 linters:
   enable:
-    - megacheck
+    - staticcheck
     - govet
+    - gosimple
     - gocyclo
     - gocritic
     - goconst
