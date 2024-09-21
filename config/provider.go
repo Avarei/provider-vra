@@ -8,6 +8,8 @@ import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
 
+	ujconfig "github.com/crossplane/upjet/pkg/config"
+
 	blockdevice "github.com/avarei/provider-vra/config/block_device"
 	blueprint "github.com/avarei/provider-vra/config/blueprint"
 	catalogitementitlement "github.com/avarei/provider-vra/config/catalog_item"
@@ -26,7 +28,6 @@ import (
 	project "github.com/avarei/provider-vra/config/project"
 	storage "github.com/avarei/provider-vra/config/storage"
 	zone "github.com/avarei/provider-vra/config/zone"
-	ujconfig "github.com/crossplane/upjet/pkg/config"
 )
 
 const (
