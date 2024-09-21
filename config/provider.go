@@ -8,11 +8,14 @@ import (
 	// Note(turkenh): we are importing this to embed provider schema document
 	_ "embed"
 
+	ujconfig "github.com/crossplane/upjet/pkg/config"
+
 	blockdevice "github.com/avarei/provider-vra/config/block_device"
 	blueprint "github.com/avarei/provider-vra/config/blueprint"
 	catalogitementitlement "github.com/avarei/provider-vra/config/catalog_item"
 	catalogsource "github.com/avarei/provider-vra/config/catalog_source"
 	cloudaccount "github.com/avarei/provider-vra/config/cloud_account"
+	contentsharing "github.com/avarei/provider-vra/config/content_sharing"
 	contentsource "github.com/avarei/provider-vra/config/content_source"
 	deployment "github.com/avarei/provider-vra/config/deployment"
 	fabric "github.com/avarei/provider-vra/config/fabric"
@@ -25,7 +28,6 @@ import (
 	project "github.com/avarei/provider-vra/config/project"
 	storage "github.com/avarei/provider-vra/config/storage"
 	zone "github.com/avarei/provider-vra/config/zone"
-	ujconfig "github.com/upbound/upjet/pkg/config"
 )
 
 const (
@@ -62,6 +64,7 @@ func GetProvider() *ujconfig.Provider {
 		catalogsource.Configure,
 		catalogitementitlement.Configure,
 		cloudaccount.Configure,
+		contentsharing.Configure,
 		contentsource.Configure,
 		integration.Configure,
 		loadbalancer.Configure,

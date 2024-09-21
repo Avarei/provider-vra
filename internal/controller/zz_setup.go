@@ -1,5 +1,5 @@
 /*
-Copyright 2021 Upbound Inc.
+Copyright 2023 Upbound Inc. - ANKASOFT
 */
 
 package controller
@@ -7,7 +7,7 @@ package controller
 import (
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/upbound/upjet/pkg/controller"
+	"github.com/crossplane/upjet/pkg/controller"
 
 	blockdevice "github.com/avarei/provider-vra/internal/controller/blockdevice/blockdevice"
 	blockdevicesnapshot "github.com/avarei/provider-vra/internal/controller/blockdevice/blockdevicesnapshot"
@@ -22,6 +22,7 @@ import (
 	accountnsxt "github.com/avarei/provider-vra/internal/controller/cloudaccount/accountnsxt"
 	accountvmc "github.com/avarei/provider-vra/internal/controller/cloudaccount/accountvmc"
 	accountvsphere "github.com/avarei/provider-vra/internal/controller/cloudaccount/accountvsphere"
+	contentsharingpolicy "github.com/avarei/provider-vra/internal/controller/contentsharing/contentsharingpolicy"
 	contentsource "github.com/avarei/provider-vra/internal/controller/contentsource/contentsource"
 	deployment "github.com/avarei/provider-vra/internal/controller/deployment/deployment"
 	compute "github.com/avarei/provider-vra/internal/controller/fabric/compute"
@@ -61,6 +62,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		accountnsxt.Setup,
 		accountvmc.Setup,
 		accountvsphere.Setup,
+		contentsharingpolicy.Setup,
 		contentsource.Setup,
 		deployment.Setup,
 		compute.Setup,

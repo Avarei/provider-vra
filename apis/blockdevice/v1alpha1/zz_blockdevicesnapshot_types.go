@@ -13,9 +13,29 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type BlockDeviceSnapshotInitParameters struct {
+
+	// +crossplane:generate:reference:type=BlockDevice
+	BlockDeviceID *string `json:"blockDeviceId,omitempty" tf:"block_device_id,omitempty"`
+
+	// Reference to a BlockDevice to populate blockDeviceId.
+	// +kubebuilder:validation:Optional
+	BlockDeviceIDRef *v1.Reference `json:"blockDeviceIdRef,omitempty" tf:"-"`
+
+	// Selector for a BlockDevice to populate blockDeviceId.
+	// +kubebuilder:validation:Optional
+	BlockDeviceIDSelector *v1.Selector `json:"blockDeviceIdSelector,omitempty" tf:"-"`
+
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+}
+
+type BlockDeviceSnapshotLinksInitParameters struct {
+}
+
 type BlockDeviceSnapshotLinksObservation struct {
 	Href *string `json:"href,omitempty" tf:"href,omitempty"`
 
+	// +listType=set
 	Hrefs []*string `json:"hrefs,omitempty" tf:"hrefs,omitempty"`
 
 	Rel *string `json:"rel,omitempty" tf:"rel,omitempty"`
@@ -68,6 +88,17 @@ type BlockDeviceSnapshotParameters struct {
 type BlockDeviceSnapshotSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     BlockDeviceSnapshotParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider BlockDeviceSnapshotInitParameters `json:"initProvider,omitempty"`
 }
 
 // BlockDeviceSnapshotStatus defines the observed state of BlockDeviceSnapshot.
@@ -77,13 +108,14 @@ type BlockDeviceSnapshotStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // BlockDeviceSnapshot is the Schema for the BlockDeviceSnapshots API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type BlockDeviceSnapshot struct {
 	metav1.TypeMeta   `json:",inline"`

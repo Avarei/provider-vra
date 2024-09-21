@@ -4,7 +4,7 @@ Copyright 2022 Upbound Inc.
 
 package config
 
-import "github.com/upbound/upjet/pkg/config"
+import "github.com/crossplane/upjet/pkg/config"
 
 // ExternalNameConfigs contains all external name configurations for this
 // provider.
@@ -34,6 +34,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"vra_catalog_source_blueprint":   config.IdentifierFromProvider,
 	"vra_catalog_source_entitlement": config.IdentifierFromProvider,
 	"vra_catalog_item_entitlement":   config.IdentifierFromProvider,
+	"vra_content_sharing_policy":     config.IdentifierFromProvider,
 	"vra_content_source":             config.IdentifierFromProvider,
 	"vra_integration":                config.IdentifierFromProvider,
 	"vra_load_balancer":              config.IdentifierFromProvider,

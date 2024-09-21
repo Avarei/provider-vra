@@ -13,9 +13,40 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type NetworkIPRangeInitParameters struct {
+
+	// A human-friendly description.
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// End IP address of the range.
+	EndIPAddress *string `json:"endIpAddress,omitempty" tf:"end_ip_address,omitempty"`
+
+	// The Id of the fabric network.
+	FabricNetworkID *string `json:"fabricNetworkId,omitempty" tf:"fabric_network_id,omitempty"`
+
+	// The Ids of the fabric networks.
+	// +listType=set
+	FabricNetworkIds []*string `json:"fabricNetworkIds,omitempty" tf:"fabric_network_ids,omitempty"`
+
+	// IP address version: IPv4 or IPv6.
+	IPVersion *string `json:"ipVersion,omitempty" tf:"ip_version,omitempty"`
+
+	// The name of the network IP range.
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// Start IP address of the range.
+	StartIPAddress *string `json:"startIpAddress,omitempty" tf:"start_ip_address,omitempty"`
+
+	Tags []NetworkIPRangeTagsInitParameters `json:"tags,omitempty" tf:"tags,omitempty"`
+}
+
+type NetworkIPRangeLinksInitParameters struct {
+}
+
 type NetworkIPRangeLinksObservation struct {
 	Href *string `json:"href,omitempty" tf:"href,omitempty"`
 
+	// +listType=set
 	Hrefs []*string `json:"hrefs,omitempty" tf:"hrefs,omitempty"`
 
 	Rel *string `json:"rel,omitempty" tf:"rel,omitempty"`
@@ -42,6 +73,7 @@ type NetworkIPRangeObservation struct {
 	FabricNetworkID *string `json:"fabricNetworkId,omitempty" tf:"fabric_network_id,omitempty"`
 
 	// The Ids of the fabric networks.
+	// +listType=set
 	FabricNetworkIds []*string `json:"fabricNetworkIds,omitempty" tf:"fabric_network_ids,omitempty"`
 
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
@@ -85,6 +117,7 @@ type NetworkIPRangeParameters struct {
 
 	// The Ids of the fabric networks.
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	FabricNetworkIds []*string `json:"fabricNetworkIds,omitempty" tf:"fabric_network_ids,omitempty"`
 
 	// IP address version: IPv4 or IPv6.
@@ -103,6 +136,12 @@ type NetworkIPRangeParameters struct {
 	Tags []NetworkIPRangeTagsParameters `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
+type NetworkIPRangeTagsInitParameters struct {
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
+	Value *string `json:"value,omitempty" tf:"value,omitempty"`
+}
+
 type NetworkIPRangeTagsObservation struct {
 	Key *string `json:"key,omitempty" tf:"key,omitempty"`
 
@@ -111,10 +150,10 @@ type NetworkIPRangeTagsObservation struct {
 
 type NetworkIPRangeTagsParameters struct {
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Key *string `json:"key" tf:"key,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Value *string `json:"value" tf:"value,omitempty"`
 }
 
@@ -122,6 +161,17 @@ type NetworkIPRangeTagsParameters struct {
 type NetworkIPRangeSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     NetworkIPRangeParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider NetworkIPRangeInitParameters `json:"initProvider,omitempty"`
 }
 
 // NetworkIPRangeStatus defines the observed state of NetworkIPRange.
@@ -131,21 +181,22 @@ type NetworkIPRangeStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // NetworkIPRange is the Schema for the NetworkIPRanges API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type NetworkIPRange struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.endIpAddress)",message="endIpAddress is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.ipVersion)",message="ipVersion is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.startIpAddress)",message="startIpAddress is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.endIpAddress) || (has(self.initProvider) && has(self.initProvider.endIpAddress))",message="spec.forProvider.endIpAddress is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.ipVersion) || (has(self.initProvider) && has(self.initProvider.ipVersion))",message="spec.forProvider.ipVersion is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.startIpAddress) || (has(self.initProvider) && has(self.initProvider.startIpAddress))",message="spec.forProvider.startIpAddress is a required parameter"
 	Spec   NetworkIPRangeSpec   `json:"spec"`
 	Status NetworkIPRangeStatus `json:"status,omitempty"`
 }

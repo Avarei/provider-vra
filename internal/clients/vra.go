@@ -13,7 +13,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/upbound/upjet/pkg/terraform"
+	"github.com/crossplane/upjet/pkg/terraform"
 
 	"github.com/avarei/provider-vra/apis/v1beta1"
 )
@@ -28,12 +28,17 @@ const (
 )
 
 const (
-	keyURL          = "url"
-	keyRefreshToken = "refresh_token"
+	keyURL                = "url"
+	keyAccessToken        = "access_token"
+	keyRefreshToken       = "refresh_token"
+	keyInsecure           = "insecure"
+	keyReauthorizeTimeout = "reauthorize_timeout"
+	keyApiTimeout         = "api_timeout"
 )
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
 // returns Terraform provider setup configuration
+// nolint:gocyclo
 func TerraformSetupBuilder(version, providerSource, providerVersion string) terraform.SetupFn {
 	return func(ctx context.Context, client client.Client, mg resource.Managed) (terraform.Setup, error) {
 		ps := terraform.Setup{
@@ -73,8 +78,20 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 		if v, ok := vraCreds[keyURL]; ok {
 			ps.Configuration[keyURL] = v
 		}
+		if v, ok := vraCreds[keyAccessToken]; ok {
+			ps.Configuration[keyAccessToken] = v
+		}
 		if v, ok := vraCreds[keyRefreshToken]; ok {
 			ps.Configuration[keyRefreshToken] = v
+		}
+		if v, ok := vraCreds[keyInsecure]; ok {
+			ps.Configuration[keyInsecure] = v
+		}
+		if v, ok := vraCreds[keyReauthorizeTimeout]; ok {
+			ps.Configuration[keyReauthorizeTimeout] = v
+		}
+		if v, ok := vraCreds[keyApiTimeout]; ok {
+			ps.Configuration[keyApiTimeout] = v
 		}
 
 		// Set credentials in Terraform provider environment.

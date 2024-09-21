@@ -17,22 +17,14 @@ func (mg *AccountAws) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this AccountAws.
-func (mg *AccountAws) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this AccountAws.
+func (mg *AccountAws) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this AccountAws.
 func (mg *AccountAws) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this AccountAws.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *AccountAws) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this AccountAws.
@@ -55,22 +47,14 @@ func (mg *AccountAws) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this AccountAws.
-func (mg *AccountAws) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this AccountAws.
+func (mg *AccountAws) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this AccountAws.
 func (mg *AccountAws) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this AccountAws.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *AccountAws) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this AccountAws.
@@ -93,22 +77,14 @@ func (mg *AccountAzure) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this AccountAzure.
-func (mg *AccountAzure) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this AccountAzure.
+func (mg *AccountAzure) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this AccountAzure.
 func (mg *AccountAzure) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this AccountAzure.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *AccountAzure) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this AccountAzure.
@@ -131,22 +107,14 @@ func (mg *AccountAzure) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this AccountAzure.
-func (mg *AccountAzure) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this AccountAzure.
+func (mg *AccountAzure) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this AccountAzure.
 func (mg *AccountAzure) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this AccountAzure.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *AccountAzure) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this AccountAzure.
@@ -169,22 +137,14 @@ func (mg *AccountGCP) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this AccountGCP.
-func (mg *AccountGCP) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this AccountGCP.
+func (mg *AccountGCP) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this AccountGCP.
 func (mg *AccountGCP) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this AccountGCP.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *AccountGCP) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this AccountGCP.
@@ -207,22 +167,14 @@ func (mg *AccountGCP) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this AccountGCP.
-func (mg *AccountGCP) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this AccountGCP.
+func (mg *AccountGCP) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this AccountGCP.
 func (mg *AccountGCP) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this AccountGCP.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *AccountGCP) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this AccountGCP.
@@ -245,22 +197,14 @@ func (mg *AccountNsxt) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this AccountNsxt.
-func (mg *AccountNsxt) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this AccountNsxt.
+func (mg *AccountNsxt) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this AccountNsxt.
 func (mg *AccountNsxt) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this AccountNsxt.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *AccountNsxt) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this AccountNsxt.
@@ -283,22 +227,14 @@ func (mg *AccountNsxt) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this AccountNsxt.
-func (mg *AccountNsxt) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this AccountNsxt.
+func (mg *AccountNsxt) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this AccountNsxt.
 func (mg *AccountNsxt) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this AccountNsxt.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *AccountNsxt) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this AccountNsxt.
@@ -321,22 +257,14 @@ func (mg *AccountVmc) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this AccountVmc.
-func (mg *AccountVmc) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this AccountVmc.
+func (mg *AccountVmc) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this AccountVmc.
 func (mg *AccountVmc) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this AccountVmc.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *AccountVmc) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this AccountVmc.
@@ -359,22 +287,14 @@ func (mg *AccountVmc) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this AccountVmc.
-func (mg *AccountVmc) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this AccountVmc.
+func (mg *AccountVmc) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this AccountVmc.
 func (mg *AccountVmc) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this AccountVmc.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *AccountVmc) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this AccountVmc.
@@ -397,22 +317,14 @@ func (mg *AccountVsphere) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this AccountVsphere.
-func (mg *AccountVsphere) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this AccountVsphere.
+func (mg *AccountVsphere) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this AccountVsphere.
 func (mg *AccountVsphere) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this AccountVsphere.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *AccountVsphere) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this AccountVsphere.
@@ -435,22 +347,14 @@ func (mg *AccountVsphere) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this AccountVsphere.
-func (mg *AccountVsphere) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this AccountVsphere.
+func (mg *AccountVsphere) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this AccountVsphere.
 func (mg *AccountVsphere) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this AccountVsphere.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *AccountVsphere) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this AccountVsphere.

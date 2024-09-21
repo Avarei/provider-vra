@@ -17,22 +17,14 @@ func (mg *CatalogSourceBlueprint) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this CatalogSourceBlueprint.
-func (mg *CatalogSourceBlueprint) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this CatalogSourceBlueprint.
+func (mg *CatalogSourceBlueprint) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this CatalogSourceBlueprint.
 func (mg *CatalogSourceBlueprint) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this CatalogSourceBlueprint.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *CatalogSourceBlueprint) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this CatalogSourceBlueprint.
@@ -55,22 +47,14 @@ func (mg *CatalogSourceBlueprint) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this CatalogSourceBlueprint.
-func (mg *CatalogSourceBlueprint) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this CatalogSourceBlueprint.
+func (mg *CatalogSourceBlueprint) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this CatalogSourceBlueprint.
 func (mg *CatalogSourceBlueprint) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this CatalogSourceBlueprint.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *CatalogSourceBlueprint) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this CatalogSourceBlueprint.

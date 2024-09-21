@@ -13,6 +13,28 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type BlueprintInitParameters struct {
+	Content *string `json:"content,omitempty" tf:"content,omitempty"`
+
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/apis/project/v1alpha1.Project
+	ProjectID *string `json:"projectId,omitempty" tf:"project_id,omitempty"`
+
+	// Reference to a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDRef *v1.Reference `json:"projectIdRef,omitempty" tf:"-"`
+
+	// Selector for a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDSelector *v1.Selector `json:"projectIdSelector,omitempty" tf:"-"`
+
+	// Flag to indicate blueprint can be requested from any project in org
+	RequestScopeOrg *bool `json:"requestScopeOrg,omitempty" tf:"request_scope_org,omitempty"`
+}
+
 type BlueprintObservation struct {
 	Content *string `json:"content,omitempty" tf:"content,omitempty"`
 
@@ -22,6 +44,7 @@ type BlueprintObservation struct {
 
 	ContentSourceSyncAt *string `json:"contentSourceSyncAt,omitempty" tf:"content_source_sync_at,omitempty"`
 
+	// +listType=set
 	ContentSourceSyncMessages []*string `json:"contentSourceSyncMessages,omitempty" tf:"content_source_sync_messages,omitempty"`
 
 	ContentSourceSyncStatus *string `json:"contentSourceSyncStatus,omitempty" tf:"content_source_sync_status,omitempty"`
@@ -92,9 +115,13 @@ type BlueprintParameters struct {
 	RequestScopeOrg *bool `json:"requestScopeOrg,omitempty" tf:"request_scope_org,omitempty"`
 }
 
+type ValidationMessagesInitParameters struct {
+}
+
 type ValidationMessagesObservation struct {
 	Message *string `json:"message,omitempty" tf:"message,omitempty"`
 
+	// +mapType=granular
 	Metadata map[string]*string `json:"metadata,omitempty" tf:"metadata,omitempty"`
 
 	Path *string `json:"path,omitempty" tf:"path,omitempty"`
@@ -111,6 +138,17 @@ type ValidationMessagesParameters struct {
 type BlueprintSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     BlueprintParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider BlueprintInitParameters `json:"initProvider,omitempty"`
 }
 
 // BlueprintStatus defines the observed state of Blueprint.
@@ -120,18 +158,19 @@ type BlueprintStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // Blueprint is the Schema for the Blueprints API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type Blueprint struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
 	Spec   BlueprintSpec   `json:"spec"`
 	Status BlueprintStatus `json:"status,omitempty"`
 }

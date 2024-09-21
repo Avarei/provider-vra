@@ -16,6 +16,7 @@ import (
 	v1alpha1catalogsourceblueprint "github.com/avarei/provider-vra/apis/catalogsourceblueprint/v1alpha1"
 	v1alpha1catalogsourceentitlement "github.com/avarei/provider-vra/apis/catalogsourceentitlement/v1alpha1"
 	v1alpha1cloudaccount "github.com/avarei/provider-vra/apis/cloudaccount/v1alpha1"
+	v1alpha1contentsharing "github.com/avarei/provider-vra/apis/contentsharing/v1alpha1"
 	v1alpha1contentsource "github.com/avarei/provider-vra/apis/contentsource/v1alpha1"
 	v1alpha1deployment "github.com/avarei/provider-vra/apis/deployment/v1alpha1"
 	v1alpha1fabric "github.com/avarei/provider-vra/apis/fabric/v1alpha1"
@@ -41,6 +42,7 @@ func init() {
 		v1alpha1catalogsourceblueprint.SchemeBuilder.AddToScheme,
 		v1alpha1catalogsourceentitlement.SchemeBuilder.AddToScheme,
 		v1alpha1cloudaccount.SchemeBuilder.AddToScheme,
+		v1alpha1contentsharing.SchemeBuilder.AddToScheme,
 		v1alpha1contentsource.SchemeBuilder.AddToScheme,
 		v1alpha1deployment.SchemeBuilder.AddToScheme,
 		v1alpha1fabric.SchemeBuilder.AddToScheme,

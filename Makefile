@@ -4,11 +4,11 @@
 PROJECT_NAME ?= provider-vra
 PROJECT_REPO ?= github.com/avarei/$(PROJECT_NAME)
 
-export TERRAFORM_VERSION ?= 1.7.2
+export TERRAFORM_VERSION ?= 1.8.2
 
 export TERRAFORM_PROVIDER_SOURCE ?= vmware/vra
 export TERRAFORM_PROVIDER_REPO ?= https://github.com/vmware/terraform-provider-vra
-export TERRAFORM_PROVIDER_VERSION ?= 0.7.3
+export TERRAFORM_PROVIDER_VERSION ?= 0.9.0
 export TERRAFORM_PROVIDER_DOWNLOAD_NAME ?= terraform-provider-vra
 export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= https://releases.hashicorp.com/$(TERRAFORM_PROVIDER_DOWNLOAD_NAME)/$(TERRAFORM_PROVIDER_VERSION)
 export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-vra_v$(TERRAFORM_PROVIDER_VERSION)_x5
@@ -40,8 +40,8 @@ NPROCS ?= 1
 # to half the number of CPU cores.
 GO_TEST_PARALLEL := $(shell echo $$(( $(NPROCS) / 2 )))
 
-GO_REQUIRED_VERSION ?= 1.19
-GOLANGCILINT_VERSION ?= 1.50.0
+GO_REQUIRED_VERSION ?= 1.22
+GOLANGCILINT_VERSION ?= 1.61.0
 GO_STATIC_PACKAGES = $(GO_PROJECT)/cmd/provider $(GO_PROJECT)/cmd/generator
 GO_LDFLAGS += -X $(GO_PROJECT)/internal/version.Version=$(VERSION)
 GO_SUBDIRS += cmd internal apis
@@ -50,10 +50,10 @@ GO_SUBDIRS += cmd internal apis
 # ====================================================================================
 # Setup Kubernetes tools
 
-KIND_VERSION = v0.15.0
-UP_VERSION = v0.18.0
+KIND_VERSION = v0.24.0
+UP_VERSION = v0.33.0
 UP_CHANNEL = stable
-UPTEST_VERSION = v0.5.0
+UPTEST_VERSION = v1.1.2
 -include build/makelib/k8s_tools.mk
 
 # ====================================================================================
@@ -97,7 +97,7 @@ build.init: $(UP)
 
 # ====================================================================================
 # Setup Terraform for fetching provider schema
-TERRAFORM := $(TOOLS_HOST_DIR)/terraform-$(TERRAFORM_VERSION)
+TERRAFORM := $(TOOLS_HOST_DIR)/tofu-$(TERRAFORM_VERSION)
 TERRAFORM_WORKDIR := $(WORK_DIR)/terraform
 TERRAFORM_PROVIDER_SCHEMA := config/schema.json
 
@@ -162,6 +162,7 @@ run: go.build
 
 # ====================================================================================
 # End to End Testing
+CROSSPLANE_VERSION = 1.17.0
 CROSSPLANE_NAMESPACE = upbound-system
 -include build/makelib/local.xpkg.mk
 -include build/makelib/controlplane.mk

@@ -17,22 +17,14 @@ func (mg *Profile) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this Profile.
-func (mg *Profile) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this Profile.
+func (mg *Profile) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this Profile.
 func (mg *Profile) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this Profile.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *Profile) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this Profile.
@@ -55,22 +47,14 @@ func (mg *Profile) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this Profile.
-func (mg *Profile) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this Profile.
+func (mg *Profile) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this Profile.
 func (mg *Profile) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this Profile.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *Profile) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this Profile.
@@ -93,22 +77,14 @@ func (mg *ProfileAws) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this ProfileAws.
-func (mg *ProfileAws) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this ProfileAws.
+func (mg *ProfileAws) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this ProfileAws.
 func (mg *ProfileAws) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this ProfileAws.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *ProfileAws) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this ProfileAws.
@@ -131,22 +107,14 @@ func (mg *ProfileAws) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this ProfileAws.
-func (mg *ProfileAws) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this ProfileAws.
+func (mg *ProfileAws) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this ProfileAws.
 func (mg *ProfileAws) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this ProfileAws.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *ProfileAws) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this ProfileAws.
@@ -169,22 +137,14 @@ func (mg *ProfileAzure) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this ProfileAzure.
-func (mg *ProfileAzure) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this ProfileAzure.
+func (mg *ProfileAzure) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this ProfileAzure.
 func (mg *ProfileAzure) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this ProfileAzure.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *ProfileAzure) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this ProfileAzure.
@@ -207,22 +167,14 @@ func (mg *ProfileAzure) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this ProfileAzure.
-func (mg *ProfileAzure) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this ProfileAzure.
+func (mg *ProfileAzure) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this ProfileAzure.
 func (mg *ProfileAzure) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this ProfileAzure.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *ProfileAzure) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this ProfileAzure.
@@ -245,22 +197,14 @@ func (mg *ProfileVsphere) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this ProfileVsphere.
-func (mg *ProfileVsphere) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this ProfileVsphere.
+func (mg *ProfileVsphere) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this ProfileVsphere.
 func (mg *ProfileVsphere) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this ProfileVsphere.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *ProfileVsphere) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this ProfileVsphere.
@@ -283,22 +227,14 @@ func (mg *ProfileVsphere) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this ProfileVsphere.
-func (mg *ProfileVsphere) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this ProfileVsphere.
+func (mg *ProfileVsphere) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this ProfileVsphere.
 func (mg *ProfileVsphere) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this ProfileVsphere.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *ProfileVsphere) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this ProfileVsphere.

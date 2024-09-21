@@ -13,9 +13,47 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type AccountVsphereInitParameters struct {
+
+	// Whether to accept self signed certificate when connecting to the vCenter Server.
+	AcceptSelfSignedCert *bool `json:"acceptSelfSignedCert,omitempty" tf:"accept_self_signed_cert,omitempty"`
+
+	// NSX-V or NSX-T account ids to associate with this vSphere cloud account.
+	// +listType=set
+	AssociatedCloudAccountIds []*string `json:"associatedCloudAccountIds,omitempty" tf:"associated_cloud_account_ids,omitempty"`
+
+	// Identifier of a data collector vm deployed in the on premise infrastructure.
+	DcID *string `json:"dcId,omitempty" tf:"dc_id,omitempty"`
+
+	// A human-friendly description.
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// IP address or FQDN of the vCenter Server.
+	Hostname *string `json:"hostname,omitempty" tf:"hostname,omitempty"`
+
+	// The name of this resource instance.
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// Password of the vCenter Server.
+	PasswordSecretRef v1.SecretKeySelector `json:"passwordSecretRef" tf:"-"`
+
+	// The set of region ids that will be enabled for this cloud account.
+	// +listType=set
+	Regions []*string `json:"regions,omitempty" tf:"regions,omitempty"`
+
+	Tags []AccountVsphereTagsInitParameters `json:"tags,omitempty" tf:"tags,omitempty"`
+
+	// Username of the vCenter Server.
+	Username *string `json:"username,omitempty" tf:"username,omitempty"`
+}
+
+type AccountVsphereLinksInitParameters struct {
+}
+
 type AccountVsphereLinksObservation struct {
 	Href *string `json:"href,omitempty" tf:"href,omitempty"`
 
+	// +listType=set
 	Hrefs []*string `json:"hrefs,omitempty" tf:"hrefs,omitempty"`
 
 	Rel *string `json:"rel,omitempty" tf:"rel,omitempty"`
@@ -30,6 +68,7 @@ type AccountVsphereObservation struct {
 	AcceptSelfSignedCert *bool `json:"acceptSelfSignedCert,omitempty" tf:"accept_self_signed_cert,omitempty"`
 
 	// NSX-V or NSX-T account ids to associate with this vSphere cloud account.
+	// +listType=set
 	AssociatedCloudAccountIds []*string `json:"associatedCloudAccountIds,omitempty" tf:"associated_cloud_account_ids,omitempty"`
 
 	// Date when the entity was created. The date is in ISO 8601 and UTC.
@@ -58,6 +97,7 @@ type AccountVsphereObservation struct {
 	Owner *string `json:"owner,omitempty" tf:"owner,omitempty"`
 
 	// The set of region ids that will be enabled for this cloud account.
+	// +listType=set
 	Regions []*string `json:"regions,omitempty" tf:"regions,omitempty"`
 
 	Tags []AccountVsphereTagsObservation `json:"tags,omitempty" tf:"tags,omitempty"`
@@ -77,6 +117,7 @@ type AccountVsphereParameters struct {
 
 	// NSX-V or NSX-T account ids to associate with this vSphere cloud account.
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	AssociatedCloudAccountIds []*string `json:"associatedCloudAccountIds,omitempty" tf:"associated_cloud_account_ids,omitempty"`
 
 	// Identifier of a data collector vm deployed in the on premise infrastructure.
@@ -101,6 +142,7 @@ type AccountVsphereParameters struct {
 
 	// The set of region ids that will be enabled for this cloud account.
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	Regions []*string `json:"regions,omitempty" tf:"regions,omitempty"`
 
 	// +kubebuilder:validation:Optional
@@ -111,6 +153,12 @@ type AccountVsphereParameters struct {
 	Username *string `json:"username,omitempty" tf:"username,omitempty"`
 }
 
+type AccountVsphereTagsInitParameters struct {
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
+	Value *string `json:"value,omitempty" tf:"value,omitempty"`
+}
+
 type AccountVsphereTagsObservation struct {
 	Key *string `json:"key,omitempty" tf:"key,omitempty"`
 
@@ -119,10 +167,10 @@ type AccountVsphereTagsObservation struct {
 
 type AccountVsphereTagsParameters struct {
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Key *string `json:"key" tf:"key,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Value *string `json:"value" tf:"value,omitempty"`
 }
 
@@ -130,6 +178,17 @@ type AccountVsphereTagsParameters struct {
 type AccountVsphereSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     AccountVsphereParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider AccountVsphereInitParameters `json:"initProvider,omitempty"`
 }
 
 // AccountVsphereStatus defines the observed state of AccountVsphere.
@@ -139,22 +198,23 @@ type AccountVsphereStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // AccountVsphere is the Schema for the AccountVspheres API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type AccountVsphere struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.hostname)",message="hostname is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.passwordSecretRef)",message="passwordSecretRef is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.regions)",message="regions is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.username)",message="username is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.hostname) || (has(self.initProvider) && has(self.initProvider.hostname))",message="spec.forProvider.hostname is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.passwordSecretRef)",message="spec.forProvider.passwordSecretRef is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.regions) || (has(self.initProvider) && has(self.initProvider.regions))",message="spec.forProvider.regions is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.username) || (has(self.initProvider) && has(self.initProvider.username))",message="spec.forProvider.username is a required parameter"
 	Spec   AccountVsphereSpec   `json:"spec"`
 	Status AccountVsphereStatus `json:"status,omitempty"`
 }

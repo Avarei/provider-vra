@@ -36,6 +36,22 @@ func (mg *Blueprint) ResolveReferences(ctx context.Context, c client.Reader) err
 	mg.Spec.ForProvider.ProjectID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.ForProvider.ProjectIDRef = rsp.ResolvedReference
 
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.ProjectID),
+		Extract:      reference.ExternalName(),
+		Reference:    mg.Spec.InitProvider.ProjectIDRef,
+		Selector:     mg.Spec.InitProvider.ProjectIDSelector,
+		To: reference.To{
+			List:    &v1alpha1.ProjectList{},
+			Managed: &v1alpha1.Project{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.InitProvider.ProjectID")
+	}
+	mg.Spec.InitProvider.ProjectID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.InitProvider.ProjectIDRef = rsp.ResolvedReference
+
 	return nil
 }
 
@@ -61,6 +77,22 @@ func (mg *Version) ResolveReferences(ctx context.Context, c client.Reader) error
 	}
 	mg.Spec.ForProvider.BlueprintID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.ForProvider.BlueprintIDRef = rsp.ResolvedReference
+
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.BlueprintID),
+		Extract:      reference.ExternalName(),
+		Reference:    mg.Spec.InitProvider.BlueprintIDRef,
+		Selector:     mg.Spec.InitProvider.BlueprintIDSelector,
+		To: reference.To{
+			List:    &BlueprintList{},
+			Managed: &Blueprint{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.InitProvider.BlueprintID")
+	}
+	mg.Spec.InitProvider.BlueprintID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.InitProvider.BlueprintIDRef = rsp.ResolvedReference
 
 	return nil
 }

@@ -17,22 +17,14 @@ func (mg *BlockDevice) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this BlockDevice.
-func (mg *BlockDevice) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this BlockDevice.
+func (mg *BlockDevice) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this BlockDevice.
 func (mg *BlockDevice) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this BlockDevice.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *BlockDevice) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this BlockDevice.
@@ -55,22 +47,14 @@ func (mg *BlockDevice) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this BlockDevice.
-func (mg *BlockDevice) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this BlockDevice.
+func (mg *BlockDevice) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this BlockDevice.
 func (mg *BlockDevice) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this BlockDevice.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *BlockDevice) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this BlockDevice.
@@ -93,22 +77,14 @@ func (mg *BlockDeviceSnapshot) GetDeletionPolicy() xpv1.DeletionPolicy {
 	return mg.Spec.DeletionPolicy
 }
 
-// GetManagementPolicy of this BlockDeviceSnapshot.
-func (mg *BlockDeviceSnapshot) GetManagementPolicy() xpv1.ManagementPolicy {
-	return mg.Spec.ManagementPolicy
+// GetManagementPolicies of this BlockDeviceSnapshot.
+func (mg *BlockDeviceSnapshot) GetManagementPolicies() xpv1.ManagementPolicies {
+	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this BlockDeviceSnapshot.
 func (mg *BlockDeviceSnapshot) GetProviderConfigReference() *xpv1.Reference {
 	return mg.Spec.ProviderConfigReference
-}
-
-/*
-GetProviderReference of this BlockDeviceSnapshot.
-Deprecated: Use GetProviderConfigReference.
-*/
-func (mg *BlockDeviceSnapshot) GetProviderReference() *xpv1.Reference {
-	return mg.Spec.ProviderReference
 }
 
 // GetPublishConnectionDetailsTo of this BlockDeviceSnapshot.
@@ -131,22 +107,14 @@ func (mg *BlockDeviceSnapshot) SetDeletionPolicy(r xpv1.DeletionPolicy) {
 	mg.Spec.DeletionPolicy = r
 }
 
-// SetManagementPolicy of this BlockDeviceSnapshot.
-func (mg *BlockDeviceSnapshot) SetManagementPolicy(r xpv1.ManagementPolicy) {
-	mg.Spec.ManagementPolicy = r
+// SetManagementPolicies of this BlockDeviceSnapshot.
+func (mg *BlockDeviceSnapshot) SetManagementPolicies(r xpv1.ManagementPolicies) {
+	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this BlockDeviceSnapshot.
 func (mg *BlockDeviceSnapshot) SetProviderConfigReference(r *xpv1.Reference) {
 	mg.Spec.ProviderConfigReference = r
-}
-
-/*
-SetProviderReference of this BlockDeviceSnapshot.
-Deprecated: Use SetProviderConfigReference.
-*/
-func (mg *BlockDeviceSnapshot) SetProviderReference(r *xpv1.Reference) {
-	mg.Spec.ProviderReference = r
 }
 
 // SetPublishConnectionDetailsTo of this BlockDeviceSnapshot.

@@ -13,6 +13,59 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type DeploymentInitParameters struct {
+
+	// The content of the the cloud template to be used to request the deployment.
+	BlueprintContent *string `json:"blueprintContent,omitempty" tf:"blueprint_content,omitempty"`
+
+	// The id of the cloud template to be used to request the deployment.
+	BlueprintID *string `json:"blueprintId,omitempty" tf:"blueprint_id,omitempty"`
+
+	// The version of the cloud template to be used to request the deployment.
+	BlueprintVersion *string `json:"blueprintVersion,omitempty" tf:"blueprint_version,omitempty"`
+
+	// The id of the catalog item to be used to request the deployment.
+	CatalogItemID *string `json:"catalogItemId,omitempty" tf:"catalog_item_id,omitempty"`
+
+	// The version of the catalog item to be used to request the deployment.
+	CatalogItemVersion *string `json:"catalogItemVersion,omitempty" tf:"catalog_item_version,omitempty"`
+
+	// A human-friendly description.
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	ExpandLastRequest *bool `json:"expandLastRequest,omitempty" tf:"expand_last_request,omitempty"`
+
+	// Flag to indicate whether to expand project information.
+	ExpandProject *bool `json:"expandProject,omitempty" tf:"expand_project,omitempty"`
+
+	ExpandResources *bool `json:"expandResources,omitempty" tf:"expand_resources,omitempty"`
+
+	// Inputs provided by the user. For inputs including those with default values, refer to inputs_including_defaults.
+	// +mapType=granular
+	Inputs map[string]*string `json:"inputs,omitempty" tf:"inputs,omitempty"`
+
+	// The name of the deployment.
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// The user this deployment belongs to.
+	Owner *string `json:"owner,omitempty" tf:"owner,omitempty"`
+
+	// The id of the project this deployment belongs to.
+	// +crossplane:generate:reference:type=github.com/avarei/provider-vra/apis/project/v1alpha1.Project
+	ProjectID *string `json:"projectId,omitempty" tf:"project_id,omitempty"`
+
+	// Reference to a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDRef *v1.Reference `json:"projectIdRef,omitempty" tf:"-"`
+
+	// Selector for a Project in project to populate projectId.
+	// +kubebuilder:validation:Optional
+	ProjectIDSelector *v1.Selector `json:"projectIdSelector,omitempty" tf:"-"`
+
+	// Reason for requesting/updating a blueprint.
+	Reason *string `json:"reason,omitempty" tf:"reason,omitempty"`
+}
+
 type DeploymentObservation struct {
 
 	// The content of the the cloud template to be used to request the deployment.
@@ -51,9 +104,11 @@ type DeploymentObservation struct {
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
 
 	// Inputs provided by the user. For inputs including those with default values, refer to inputs_including_defaults.
+	// +mapType=granular
 	Inputs map[string]*string `json:"inputs,omitempty" tf:"inputs,omitempty"`
 
 	// All the inputs applied during last create/update operation, including those with default values.
+	// +mapType=granular
 	InputsIncludingDefaults map[string]*string `json:"inputsIncludingDefaults,omitempty" tf:"inputs_including_defaults,omitempty"`
 
 	LastRequest []LastRequestObservation `json:"lastRequest,omitempty" tf:"last_request,omitempty"`
@@ -128,6 +183,7 @@ type DeploymentParameters struct {
 
 	// Inputs provided by the user. For inputs including those with default values, refer to inputs_including_defaults.
 	// +kubebuilder:validation:Optional
+	// +mapType=granular
 	Inputs map[string]*string `json:"inputs,omitempty" tf:"inputs,omitempty"`
 
 	// The name of the deployment.
@@ -156,6 +212,9 @@ type DeploymentParameters struct {
 	Reason *string `json:"reason,omitempty" tf:"reason,omitempty"`
 }
 
+type ExpenseInitParameters struct {
+}
+
 type ExpenseObservation struct {
 	AdditionalExpense *float64 `json:"additionalExpense,omitempty" tf:"additional_expense,omitempty"`
 
@@ -177,6 +236,9 @@ type ExpenseObservation struct {
 }
 
 type ExpenseParameters struct {
+}
+
+type LastRequestInitParameters struct {
 }
 
 type LastRequestObservation struct {
@@ -204,14 +266,17 @@ type LastRequestObservation struct {
 
 	InitializedAt *string `json:"initializedAt,omitempty" tf:"initialized_at,omitempty"`
 
+	// +mapType=granular
 	Inputs map[string]*string `json:"inputs,omitempty" tf:"inputs,omitempty"`
 
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
+	// +mapType=granular
 	Outputs map[string]*string `json:"outputs,omitempty" tf:"outputs,omitempty"`
 
 	RequestedBy *string `json:"requestedBy,omitempty" tf:"requested_by,omitempty"`
 
+	// +listType=set
 	ResourceIds []*string `json:"resourceIds,omitempty" tf:"resource_ids,omitempty"`
 
 	Status *string `json:"status,omitempty" tf:"status,omitempty"`
@@ -222,6 +287,9 @@ type LastRequestObservation struct {
 }
 
 type LastRequestParameters struct {
+}
+
+type ProjectInitParameters struct {
 }
 
 type ProjectObservation struct {
@@ -235,6 +303,9 @@ type ProjectObservation struct {
 }
 
 type ProjectParameters struct {
+}
+
+type ResourcesExpenseInitParameters struct {
 }
 
 type ResourcesExpenseObservation struct {
@@ -260,9 +331,13 @@ type ResourcesExpenseObservation struct {
 type ResourcesExpenseParameters struct {
 }
 
+type ResourcesInitParameters struct {
+}
+
 type ResourcesObservation struct {
 	CreatedAt *string `json:"createdAt,omitempty" tf:"created_at,omitempty"`
 
+	// +listType=set
 	DependsOn []*string `json:"dependsOn,omitempty" tf:"depends_on,omitempty"`
 
 	Description *string `json:"description,omitempty" tf:"description,omitempty"`
@@ -289,6 +364,17 @@ type ResourcesParameters struct {
 type DeploymentSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     DeploymentParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider DeploymentInitParameters `json:"initProvider,omitempty"`
 }
 
 // DeploymentStatus defines the observed state of Deployment.
@@ -298,18 +384,19 @@ type DeploymentStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // Deployment is the Schema for the Deployments API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type Deployment struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
 	Spec   DeploymentSpec   `json:"spec"`
 	Status DeploymentStatus `json:"status,omitempty"`
 }

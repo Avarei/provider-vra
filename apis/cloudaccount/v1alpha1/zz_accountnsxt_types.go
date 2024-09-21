@@ -13,9 +13,42 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type AccountNsxtInitParameters struct {
+
+	// Accept self signed certificate when connecting.
+	AcceptSelfSignedCert *bool `json:"acceptSelfSignedCert,omitempty" tf:"accept_self_signed_cert,omitempty"`
+
+	// Identifier of a data collector vm deployed in the on premise infrastructure. Refer to the data-collector API to create or list data collectors.
+	DcID *string `json:"dcId,omitempty" tf:"dc_id,omitempty"`
+
+	// A human-friendly description.
+	Description *string `json:"description,omitempty" tf:"description,omitempty"`
+
+	// Host name for the NSX-T endpoint.
+	Hostname *string `json:"hostname,omitempty" tf:"hostname,omitempty"`
+
+	// Create NSX-T cloud account in Manager (legacy) mode. When set to true, NSX-T cloud account is created in Manager mode. Mode cannot be changed after cloud account is created. Default value is false.
+	ManagerMode *bool `json:"managerMode,omitempty" tf:"manager_mode,omitempty"`
+
+	// A human-friendly name used as an identifier in APIs that support this option.
+	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// Password for the user used to authenticate with the cloud Account.
+	PasswordSecretRef v1.SecretKeySelector `json:"passwordSecretRef" tf:"-"`
+
+	Tags []AccountNsxtTagsInitParameters `json:"tags,omitempty" tf:"tags,omitempty"`
+
+	// Username to authenticate with the cloud account.
+	Username *string `json:"username,omitempty" tf:"username,omitempty"`
+}
+
+type AccountNsxtLinksInitParameters struct {
+}
+
 type AccountNsxtLinksObservation struct {
 	Href *string `json:"href,omitempty" tf:"href,omitempty"`
 
+	// +listType=set
 	Hrefs []*string `json:"hrefs,omitempty" tf:"hrefs,omitempty"`
 
 	Rel *string `json:"rel,omitempty" tf:"rel,omitempty"`
@@ -29,6 +62,7 @@ type AccountNsxtObservation struct {
 	// Accept self signed certificate when connecting.
 	AcceptSelfSignedCert *bool `json:"acceptSelfSignedCert,omitempty" tf:"accept_self_signed_cert,omitempty"`
 
+	// +listType=set
 	AssociatedCloudAccountIds []*string `json:"associatedCloudAccountIds,omitempty" tf:"associated_cloud_account_ids,omitempty"`
 
 	// Date when the entity was created. The date is in ISO 8601 and UTC.
@@ -106,6 +140,12 @@ type AccountNsxtParameters struct {
 	Username *string `json:"username,omitempty" tf:"username,omitempty"`
 }
 
+type AccountNsxtTagsInitParameters struct {
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
+	Value *string `json:"value,omitempty" tf:"value,omitempty"`
+}
+
 type AccountNsxtTagsObservation struct {
 	Key *string `json:"key,omitempty" tf:"key,omitempty"`
 
@@ -114,10 +154,10 @@ type AccountNsxtTagsObservation struct {
 
 type AccountNsxtTagsParameters struct {
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Key *string `json:"key" tf:"key,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Value *string `json:"value" tf:"value,omitempty"`
 }
 
@@ -125,6 +165,17 @@ type AccountNsxtTagsParameters struct {
 type AccountNsxtSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     AccountNsxtParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider AccountNsxtInitParameters `json:"initProvider,omitempty"`
 }
 
 // AccountNsxtStatus defines the observed state of AccountNsxt.
@@ -134,21 +185,22 @@ type AccountNsxtStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // AccountNsxt is the Schema for the AccountNsxts API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type AccountNsxt struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.hostname)",message="hostname is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.name)",message="name is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.passwordSecretRef)",message="passwordSecretRef is a required parameter"
-	// +kubebuilder:validation:XValidation:rule="self.managementPolicy == 'ObserveOnly' || has(self.forProvider.username)",message="username is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.hostname) || (has(self.initProvider) && has(self.initProvider.hostname))",message="spec.forProvider.hostname is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.name) || (has(self.initProvider) && has(self.initProvider.name))",message="spec.forProvider.name is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.passwordSecretRef)",message="spec.forProvider.passwordSecretRef is a required parameter"
+	// +kubebuilder:validation:XValidation:rule="!('*' in self.managementPolicies || 'Create' in self.managementPolicies || 'Update' in self.managementPolicies) || has(self.forProvider.username) || (has(self.initProvider) && has(self.initProvider.username))",message="spec.forProvider.username is a required parameter"
 	Spec   AccountNsxtSpec   `json:"spec"`
 	Status AccountNsxtStatus `json:"status,omitempty"`
 }

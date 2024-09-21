@@ -13,9 +13,17 @@ import (
 	v1 "github.com/crossplane/crossplane-runtime/apis/common/v1"
 )
 
+type DatastoreVsphereInitParameters struct {
+	Tags []DatastoreVsphereTagsInitParameters `json:"tags,omitempty" tf:"tags,omitempty"`
+}
+
+type DatastoreVsphereLinksInitParameters struct {
+}
+
 type DatastoreVsphereLinksObservation struct {
 	Href *string `json:"href,omitempty" tf:"href,omitempty"`
 
+	// +listType=set
 	Hrefs []*string `json:"hrefs,omitempty" tf:"hrefs,omitempty"`
 
 	Rel *string `json:"rel,omitempty" tf:"rel,omitempty"`
@@ -27,6 +35,7 @@ type DatastoreVsphereLinksParameters struct {
 type DatastoreVsphereObservation struct {
 
 	// Set of ids of the cloud accounts this entity belongs to.
+	// +listType=set
 	CloudAccountIds []*string `json:"cloudAccountIds,omitempty" tf:"cloud_account_ids,omitempty"`
 
 	// Date when the entity was created. The date is in ISO 8601 and UTC.
@@ -72,6 +81,12 @@ type DatastoreVsphereParameters struct {
 	Tags []DatastoreVsphereTagsParameters `json:"tags,omitempty" tf:"tags,omitempty"`
 }
 
+type DatastoreVsphereTagsInitParameters struct {
+	Key *string `json:"key,omitempty" tf:"key,omitempty"`
+
+	Value *string `json:"value,omitempty" tf:"value,omitempty"`
+}
+
 type DatastoreVsphereTagsObservation struct {
 	Key *string `json:"key,omitempty" tf:"key,omitempty"`
 
@@ -80,10 +95,10 @@ type DatastoreVsphereTagsObservation struct {
 
 type DatastoreVsphereTagsParameters struct {
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Key *string `json:"key" tf:"key,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
 	Value *string `json:"value" tf:"value,omitempty"`
 }
 
@@ -91,6 +106,17 @@ type DatastoreVsphereTagsParameters struct {
 type DatastoreVsphereSpec struct {
 	v1.ResourceSpec `json:",inline"`
 	ForProvider     DatastoreVsphereParameters `json:"forProvider"`
+	// THIS IS A BETA FIELD. It will be honored
+	// unless the Management Policies feature flag is disabled.
+	// InitProvider holds the same fields as ForProvider, with the exception
+	// of Identifier and other resource reference fields. The fields that are
+	// in InitProvider are merged into ForProvider when the resource is created.
+	// The same fields are also added to the terraform ignore_changes hook, to
+	// avoid updating them after creation. This is useful for fields that are
+	// required on creation, but we do not desire to update them after creation,
+	// for example because of an external controller is managing them, like an
+	// autoscaler.
+	InitProvider DatastoreVsphereInitParameters `json:"initProvider,omitempty"`
 }
 
 // DatastoreVsphereStatus defines the observed state of DatastoreVsphere.
@@ -100,13 +126,14 @@ type DatastoreVsphereStatus struct {
 }
 
 // +kubebuilder:object:root=true
+// +kubebuilder:subresource:status
+// +kubebuilder:storageversion
 
 // DatastoreVsphere is the Schema for the DatastoreVspheres API. <no value>
-// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="SYNCED",type="string",JSONPath=".status.conditions[?(@.type=='Synced')].status"
+// +kubebuilder:printcolumn:name="READY",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status"
 // +kubebuilder:printcolumn:name="EXTERNAL-NAME",type="string",JSONPath=".metadata.annotations.crossplane\\.io/external-name"
 // +kubebuilder:printcolumn:name="AGE",type="date",JSONPath=".metadata.creationTimestamp"
-// +kubebuilder:subresource:status
 // +kubebuilder:resource:scope=Cluster,categories={crossplane,managed,vra}
 type DatastoreVsphere struct {
 	metav1.TypeMeta   `json:",inline"`

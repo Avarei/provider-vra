@@ -1,6 +1,6 @@
 package cloudaccount
 
-import "github.com/upbound/upjet/pkg/config"
+import "github.com/crossplane/upjet/pkg/config"
 
 const version string = "v1alpha1"
 const shortGroup string = "cloudAccount"
