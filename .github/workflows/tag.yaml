@@ -6,13 +6,27 @@ on:
       version:
         description: 'Release version (e.g. v0.1.0)'
         required: true
-      message:
-        description: 'Tag message'
+      channel:
+        description: 'Release channel'
         required: true
-
+        type: choice
+        default: main
+        options:
+          - main
+          - alpha
+          - beta
+          - stable
 jobs:
   tag:
-    uses: upbound/official-providers-ci/.github/workflows/provider-tag.yml@v0.12.1
-    with:
-      version: ${{ github.event.inputs.version }}
-      message: ${{ github.event.inputs.message }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Fetch History
+        run: git fetch --prune --unshallow
+
+      - name: Publish Artifacts
+        run: make tag VERSION=${{ inputs.version }} CHANNEL=${{ inputs.channel }}
