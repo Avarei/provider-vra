@@ -34,7 +34,7 @@ jobs:
 
       - name: Promote Artifacts in S3
         if: env.AWS_ACCESS_KEY_ID != ''
-        run: make -j2 promote CHANNEL=${GITHUB_REF##*/}
+        run: make -j2 promote BRANCH_NAME=${GITHUB_REF##*/}
         env:
           VERSION: ${{ github.event.inputs.version }}
           CHANNEL: ${{ github.event.inputs.channel }}
