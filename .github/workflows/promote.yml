@@ -30,7 +30,6 @@ jobs:
         run: git fetch --prune --unshallow
 
       - name: Promote Artifacts in S3
-        if: env.AWS_ACCESS_KEY_ID != ''
         run: make -j2 promote BRANCH_NAME=${GITHUB_REF##*/}
         env:
           CHANNEL: ${{ github.event.inputs.channel }}
