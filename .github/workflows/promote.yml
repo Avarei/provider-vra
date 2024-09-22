@@ -3,13 +3,10 @@ name: Promote
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Release version (e.g. v0.1.0)'
-        required: true
       channel:
         description: 'Release channel'
         required: true
-        default: 'alpha'
+        default: 'latest'
 
 env:
   # Common versions
@@ -36,5 +33,4 @@ jobs:
         if: env.AWS_ACCESS_KEY_ID != ''
         run: make -j2 promote BRANCH_NAME=${GITHUB_REF##*/}
         env:
-          VERSION: ${{ github.event.inputs.version }}
           CHANNEL: ${{ github.event.inputs.channel }}
