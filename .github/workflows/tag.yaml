@@ -28,5 +28,10 @@ jobs:
       - name: Fetch History
         run: git fetch --prune --unshallow
 
+      - name: Config
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+
       - name: Publish Artifacts
         run: make tag VERSION=${{ inputs.version }} CHANNEL=${{ inputs.channel }}
