@@ -6,7 +6,13 @@ on:
       channel:
         description: 'Release channel'
         required: true
-        default: 'latest'
+        type: choice
+        default: main
+        options:
+          - main
+          - alpha
+          - beta
+          - stable
 
 env:
   # Common versions
@@ -28,6 +34,13 @@ jobs:
 
       - name: Fetch History
         run: git fetch --prune --unshallow
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Promote Artifacts in S3
         run: make -j2 promote BRANCH_NAME=${GITHUB_REF##*/}
