@@ -67,9 +67,7 @@ IMAGES = $(PROJECT_NAME)
 # Setup XPKG
 
 XPKG_REG_ORGS ?= ghcr.io/avarei
-# NOTE(hasheddan): skip promoting on ghcr.io/avarei as channel tags are
-# inferred.
-XPKG_REG_ORGS_NO_PROMOTE ?= ghcr.io/avarei
+XPKG_REG_ORGS_NO_PROMOTE ?=
 XPKGS = $(PROJECT_NAME)
 -include build/makelib/xpkg.mk
 
