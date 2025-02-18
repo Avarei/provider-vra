@@ -72,6 +72,11 @@ spec:
                 type: string
               forProvider:
                 properties:
+                  attachDisksBeforeBoot:
+                    description: By default, disks are attached after the machine
+                      has been built. FCDs cannot be attached to machine as a day
+                      0 task.
+                    type: boolean
                   bootConfig:
                     description: Machine boot config that will be passed to the instance
                       that can be used to perform common automated configuration tasks
@@ -130,6 +135,13 @@ spec:
                         name:
                           description: A human-friendly block-device name used as
                             an identifier in APIs that support this option.
+                          type: string
+                        scsiController:
+                          description: 'The id of the SCSI controller. Example: SCSI_Controller_0'
+                          type: string
+                        unitNumber:
+                          description: 'The unit number of the SCSI controller. Example:
+                            2'
                           type: string
                       type: object
                     type: array
@@ -285,6 +297,11 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
+                  attachDisksBeforeBoot:
+                    description: By default, disks are attached after the machine
+                      has been built. FCDs cannot be attached to machine as a day
+                      0 task.
+                    type: boolean
                   bootConfig:
                     description: Machine boot config that will be passed to the instance
                       that can be used to perform common automated configuration tasks
@@ -343,6 +360,13 @@ spec:
                         name:
                           description: A human-friendly block-device name used as
                             an identifier in APIs that support this option.
+                          type: string
+                        scsiController:
+                          description: 'The id of the SCSI controller. Example: SCSI_Controller_0'
+                          type: string
+                        unitNumber:
+                          description: 'The unit number of the SCSI controller. Example:
+                            2'
                           type: string
                       type: object
                     type: array
@@ -668,6 +692,11 @@ spec:
                 properties:
                   address:
                     type: string
+                  attachDisksBeforeBoot:
+                    description: By default, disks are attached after the machine
+                      has been built. FCDs cannot be attached to machine as a day
+                      0 task.
+                    type: boolean
                   bootConfig:
                     description: Machine boot config that will be passed to the instance
                       that can be used to perform common automated configuration tasks
@@ -729,6 +758,13 @@ spec:
                           description: A human-friendly block-device name used as
                             an identifier in APIs that support this option.
                           type: string
+                        scsiController:
+                          description: 'The id of the SCSI controller. Example: SCSI_Controller_0'
+                          type: string
+                        unitNumber:
+                          description: 'The unit number of the SCSI controller. Example:
+                            2'
+                          type: string
                       type: object
                     type: array
                   disksList:
@@ -742,6 +778,10 @@ spec:
                         description:
                           type: string
                         name:
+                          type: string
+                        scsiController:
+                          type: string
+                        unitNumber:
                           type: string
                       type: object
                     type: array

@@ -71,6 +71,12 @@ type DisksInitParameters struct {
 
 	// A human-friendly block-device name used as an identifier in APIs that support this option.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// The id of the SCSI controller. Example: SCSI_Controller_0
+	ScsiController *string `json:"scsiController,omitempty" tf:"scsi_controller,omitempty"`
+
+	// The unit number of the SCSI controller. Example: 2
+	UnitNumber *string `json:"unitNumber,omitempty" tf:"unit_number,omitempty"`
 }
 
 type DisksListInitParameters struct {
@@ -82,6 +88,10 @@ type DisksListObservation struct {
 	Description *string `json:"description,omitempty" tf:"description,omitempty"`
 
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	ScsiController *string `json:"scsiController,omitempty" tf:"scsi_controller,omitempty"`
+
+	UnitNumber *string `json:"unitNumber,omitempty" tf:"unit_number,omitempty"`
 }
 
 type DisksListParameters struct {
@@ -97,6 +107,12 @@ type DisksObservation struct {
 
 	// A human-friendly block-device name used as an identifier in APIs that support this option.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// The id of the SCSI controller. Example: SCSI_Controller_0
+	ScsiController *string `json:"scsiController,omitempty" tf:"scsi_controller,omitempty"`
+
+	// The unit number of the SCSI controller. Example: 2
+	UnitNumber *string `json:"unitNumber,omitempty" tf:"unit_number,omitempty"`
 }
 
 type DisksParameters struct {
@@ -112,6 +128,14 @@ type DisksParameters struct {
 	// A human-friendly block-device name used as an identifier in APIs that support this option.
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// The id of the SCSI controller. Example: SCSI_Controller_0
+	// +kubebuilder:validation:Optional
+	ScsiController *string `json:"scsiController,omitempty" tf:"scsi_controller,omitempty"`
+
+	// The unit number of the SCSI controller. Example: 2
+	// +kubebuilder:validation:Optional
+	UnitNumber *string `json:"unitNumber,omitempty" tf:"unit_number,omitempty"`
 }
 
 type ImageDiskConstraintsInitParameters struct {
@@ -159,6 +183,9 @@ type LinksParameters struct {
 }
 
 type MachineInitParameters struct {
+
+	// By default, disks are attached after the machine has been built. FCDs cannot be attached to machine as a day 0 task.
+	AttachDisksBeforeBoot *bool `json:"attachDisksBeforeBoot,omitempty" tf:"attach_disks_before_boot,omitempty"`
 
 	// Machine boot config that will be passed to the instance that can be used to perform common automated configuration tasks and even run scripts after the instance starts.
 	BootConfig []BootConfigInitParameters `json:"bootConfig,omitempty" tf:"boot_config,omitempty"`
@@ -209,6 +236,9 @@ type MachineInitParameters struct {
 
 type MachineObservation struct {
 	Address *string `json:"address,omitempty" tf:"address,omitempty"`
+
+	// By default, disks are attached after the machine has been built. FCDs cannot be attached to machine as a day 0 task.
+	AttachDisksBeforeBoot *bool `json:"attachDisksBeforeBoot,omitempty" tf:"attach_disks_before_boot,omitempty"`
 
 	// Machine boot config that will be passed to the instance that can be used to perform common automated configuration tasks and even run scripts after the instance starts.
 	BootConfig []BootConfigObservation `json:"bootConfig,omitempty" tf:"boot_config,omitempty"`
@@ -272,6 +302,10 @@ type MachineObservation struct {
 }
 
 type MachineParameters struct {
+
+	// By default, disks are attached after the machine has been built. FCDs cannot be attached to machine as a day 0 task.
+	// +kubebuilder:validation:Optional
+	AttachDisksBeforeBoot *bool `json:"attachDisksBeforeBoot,omitempty" tf:"attach_disks_before_boot,omitempty"`
 
 	// Machine boot config that will be passed to the instance that can be used to perform common automated configuration tasks and even run scripts after the instance starts.
 	// +kubebuilder:validation:Optional
